@@ -4,7 +4,8 @@ interface Service {
   id?: string;
   icon?: string;
   title: string;
-  description: string;
+  shortDescription?: string;
+  description?: string;
   features: string[];
   image?: string;
 }
@@ -58,7 +59,7 @@ export default function ServicesSection({ title, subtitle, services, images = []
                     {service.title}
                   </h3>
                   <p className="text-slate-600 mb-4 leading-relaxed text-sm">
-                    {service.description}
+                    {service.shortDescription || service.description}
                   </p>
 
                   {/* Features List */}

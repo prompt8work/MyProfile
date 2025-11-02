@@ -128,8 +128,8 @@ export default function ServiceDetail() {
                             </div>
                           </div>
                           <div className="flex-1 pt-2">
-                            <h3 className="text-lg font-semibold text-slate-900 mb-2">{step.title}</h3>
-                            <p className="text-slate-700 leading-relaxed">{step.description}</p>
+                            <h3 className="text-lg font-semibold text-slate-900 mb-2">{(step as any).step || (step as any).title}</h3>
+                            <p className="text-slate-700 leading-relaxed">{(step as any).description}</p>
                           </div>
                         </div>
                       ))}

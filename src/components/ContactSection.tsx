@@ -1,13 +1,12 @@
-import { Mail, Phone, Linkedin, MapPin, Send } from 'lucide-react';
+import { Mail, Linkedin } from 'lucide-react';
 import { personalInfo } from '../../data';
 
 interface ContactSectionProps {
   title: string;
   subtitle: string;
-  ctaText: string;
 }
 
-export default function ContactSection({ title, subtitle, ctaText }: ContactSectionProps) {
+export default function ContactSection({ title, subtitle }: ContactSectionProps) {
   return (
     <section
       id="contact"

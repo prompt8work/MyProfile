@@ -7,7 +7,7 @@ import ServicesSection from '../components/ServicesSection';
 import CoursesSection from '../components/CoursesSection';
 import PageTransition from '../components/PageTransition';
 
-import { skills, landingPageContent, images, courseDetails, serviceDetails, skillDetails } from '../../data';
+import { landingPageContent, images, courseDetails, serviceDetails, skillDetails } from '../../data';
 
 export default function LandingPage() {
   const [isVisible, setIsVisible] = useState(false);

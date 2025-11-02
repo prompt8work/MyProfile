@@ -173,7 +173,7 @@ export default function SkillDetail() {
                       Video Demonstrations
                     </h2>
                     <div className="space-y-6">
-                      {skill.fullContent.videos.map((video, idx) => {
+                      {skill.fullContent.videos.map((video: any, idx) => {
                         // Handle both string URLs and object format
                         const videoUrl = typeof video === 'string' ? video : video.url;
                         const videoTitle = typeof video === 'string' ? `Video ${idx + 1}` : video.title;
