@@ -2,29 +2,33 @@
 
 import Link from "next/link";
 import LinkedinIcon from "./icons/LinkedinIcon";
+import { personalInfo } from "../../data";
 
 // Absolute paths, same reasoning as Nav.tsx — this footer renders on every
 // page, so a bare #anchor only ever works while already on "/".
-const footerLinks: Record<string, { label: string; href: string }[]> = {
+const footerLinks: Record<string, { label: string; href: string; external?: boolean }[]> = {
   Work: [
     { label: "Projects", href: "/projects" },
     { label: "Case Studies", href: "/projects" },
-    { label: "Automations", href: "/#ai-lab" },
   ],
   "AI Lab": [
-    { label: "Tools", href: "/#ai-lab" },
-    { label: "Experiments", href: "/#ai-lab" },
-    { label: "Prompt Library", href: "/#ai-lab" },
+    { label: "Tools", href: "/ai-lab/tools" },
+    { label: "Experiments", href: "/ai-lab/experiments" },
+    { label: "Prompt Library", href: "/ai-lab/prompts" },
+    { label: "Automations", href: "/ai-lab/automations" },
   ],
   Content: [
-    { label: "Blog", href: "/#content" },
-    { label: "LinkedIn", href: "/#content" },
-    { label: "YouTube", href: "/#content" },
+    { label: "Blog", href: "/blog" },
+    // LinkedIn is a distribution channel for this site's blog content, not
+    // an imported content source (PRD 04.2) — this links out to the real
+    // profile, not an internal placeholder anchor.
+    { label: "Follow on LinkedIn", href: `https://${personalInfo.linkedin}`, external: true },
+    { label: "YouTube", href: "/videos" },
   ],
   Training: [
-    { label: "Courses", href: "/#training" },
-    { label: "Batches", href: "/#training" },
-    { label: "Workshops", href: "/#training" },
+    { label: "Courses", href: "/training" },
+    { label: "Batches", href: "/training" },
+    { label: "Workshops", href: "/training" },
   ],
 };
 
@@ -56,17 +60,29 @@ export default function SiteFooter() {
           {Object.entries(footerLinks).map(([section, links]) => (
             <div key={section} className="flex flex-col gap-3">
               <span className="font-mono text-[11px] text-neutral-300 tracking-wide">{section.toUpperCase()}</span>
-              {links.map((l) => (
-                <Link key={l.label} href={l.href} className="text-[13.5px] text-neutral-300 hover:text-white transition-colors">
-                  {l.label}
-                </Link>
-              ))}
+              {links.map((l) =>
+                l.external ? (
+                  <a
+                    key={l.label}
+                    href={l.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13.5px] text-neutral-300 hover:text-white transition-colors"
+                  >
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link key={l.label} href={l.href} className="text-[13.5px] text-neutral-300 hover:text-white transition-colors">
+                    {l.label}
+                  </Link>
+                )
+              )}
             </div>
           ))}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-6">
-          <span className="text-[12.5px] text-neutral-500">© 2026 Niharika Dhande. All rights reserved.</span>
+          <span className="text-[12.5px] text-neutral-400">© 2026 Niharika Dhande. All rights reserved.</span>
           <button
             type="button"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

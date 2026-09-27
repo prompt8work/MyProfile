@@ -54,10 +54,10 @@ export const expertise = [
 // there directly — e.g. `import { publicProjects } from "../../../data/projects"`.
 
 export const aiLabLinks = [
-  { title: "Tools", href: "/ai-lab" },
-  { title: "Experiments", href: "/ai-lab" },
-  { title: "Prompt Library", href: "/ai-lab" },
-  { title: "Automations", href: "/ai-lab" },
+  { title: "Tools", href: "/ai-lab/tools" },
+  { title: "Experiments", href: "/ai-lab/experiments" },
+  { title: "Prompt Library", href: "/ai-lab/prompts" },
+  { title: "Automations", href: "/ai-lab/automations" },
 ];
 
 export const process = [
@@ -69,18 +69,3 @@ export const process = [
   { step: "06", title: "Teach", description: "Turn proven practice into training, workshops and courses." },
 ];
 
-export const contentPreview = [
-  { type: "BLOG", title: "[ Article title to be published ]", note: "Excerpt preview will appear here once the first post goes live." },
-  { type: "LINKEDIN", title: "[ LinkedIn post to be imported ]", note: "Manually imported or synced posts will surface here." },
-  { type: "YOUTUBE", title: "[ Video title synced from channel ]", note: "Thumbnail, title and description sync automatically via the YouTube API." },
-];
-
-export const trainingBatch = {
-  status: "OPEN FOR REGISTRATION",
-  seats: "20 seats",
-  title: "Prompt Engineering — Weekend Batch",
-  schedule: "Sat + Sun, 11 AM–1 PM",
-  duration: "8 Weeks",
-  mode: "Online",
-  timezone: "IST",
-};

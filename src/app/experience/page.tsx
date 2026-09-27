@@ -6,11 +6,13 @@ import SectionHeading from "../../components/ui/SectionHeading";
 import ArrowLink from "../../components/ui/ArrowLink";
 import { client } from "../../sanity/lib/client";
 import { experienceQuery } from "../../sanity/lib/queries";
+import { buildMetadata } from "../../lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Experience — PromptAtWork",
   description: "Professional journey from software engineering into AI solution engineering and prompt engineering.",
-};
+  path: "/experience",
+});
 
 // Interim revalidation strategy until the Sanity webhook is wired up.
 export const revalidate = 60;
@@ -63,7 +65,7 @@ export default async function ExperiencePage() {
                       current ? "bg-plum-600 border-plum-600" : "bg-white border-neutral-300"
                     }`}
                   >
-                    <Briefcase className={`w-3.5 h-3.5 ${current ? "text-white" : "text-neutral-500"}`} />
+                    <Briefcase className={`w-3.5 h-3.5 ${current ? "text-white" : "text-neutral-600"}`} />
                   </span>
 
                   <div className="flex flex-col gap-2">

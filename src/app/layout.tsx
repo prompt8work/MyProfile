@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Playfair_Display, JetBrains_Mono } from "next/font/google";
+import { siteUrl } from "../lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,6 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "PromptAtWork — Niharika Dhande",
   description:
     "AI Solution Engineer — prompt engineering, generative AI, RAG, AI-assisted development and automation.",

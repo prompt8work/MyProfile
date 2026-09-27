@@ -47,8 +47,7 @@ export default defineType({
     defineField({
       name: "relatedContent",
       type: "array",
-      of: [{ type: "reference", to: [{ type: "project" }] }],
-      description: "Cross-links to other content — expands to Blog/Tool/etc. once those types exist (Phase 4).",
+      of: [{ type: "reference", to: [{ type: "project" }, { type: "tool" }, { type: "prompt" }, { type: "experiment" }, { type: "automation" }] }],
     }),
     defineField({ name: "publishedAt", type: "datetime" }),
   ],

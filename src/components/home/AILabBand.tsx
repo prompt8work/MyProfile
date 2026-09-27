@@ -22,7 +22,7 @@ export default function AILabBand() {
           title="Where I Experiment"
           description="Hands-on exploration of AI tools, prompts, automations and creative workflows — documented as I build."
           action={
-            <ArrowLink href="#ai-lab" theme="dark">
+            <ArrowLink href="/ai-lab" theme="dark">
               Explore AI Lab
             </ArrowLink>
           }
