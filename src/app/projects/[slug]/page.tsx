@@ -6,6 +6,8 @@ import Nav from "../../../components/Nav";
 import SiteFooter from "../../../components/SiteFooter";
 import Tag from "../../../components/ui/Tag";
 import ArrowLink from "../../../components/ui/ArrowLink";
+import RelatedContent from "../../../components/ai-lab/RelatedContent";
+import { buildMetadata } from "../../../lib/site";
 
 type ProjectDetail = {
   slug: string;
@@ -27,6 +29,12 @@ type ProjectDetail = {
   challenges: string;
   results: string;
   learnings: string;
+  relatedContent?: {
+    _type: "project" | "tool" | "prompt" | "experiment" | "automation";
+    slug: string;
+    title?: string;
+    name?: string;
+  }[];
 };
 
 // Interim revalidation strategy until the Sanity webhook is wired up.
@@ -45,10 +53,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const project: ProjectDetail | null = await client.fetch(projectBySlugQuery, { slug });
   if (!project) return {};
-  return {
+  return buildMetadata({
     title: `${project.title} — PromptAtWork`,
     description: project.summary,
-  };
+    path: `/projects/${project.slug}`,
+    type: "article",
+  });
 }
 
 function Section({ heading, body }: { heading: string; body: string }) {
@@ -140,8 +150,9 @@ export default async function ProjectDetailPage({
             </div>
           )}
 
+          <RelatedContent items={project.relatedContent} theme="light" />
+
           <div className="pt-4 border-t border-neutral-200">
-            <p className="text-[13px] text-neutral-500 mb-3">Related content will surface here once the AI Lab and Blog sections are live.</p>
             <ArrowLink href="/projects">Back to all projects</ArrowLink>
           </div>
         </div>

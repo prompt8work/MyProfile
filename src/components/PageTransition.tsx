@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, MotionConfig } from "framer-motion";
 import { ReactNode } from "react";
 
 interface PageTransitionProps {
@@ -26,8 +26,16 @@ const pageTransition = {
 
 export default function PageTransition({ children }: PageTransitionProps) {
   return (
-    <motion.div initial="initial" animate="in" variants={pageVariants} transition={pageTransition}>
-      {children}
-    </motion.div>
+    // PRD §96: reducedMotion="user" makes every animated value here (and
+    // any future motion.* added to this tree) snap straight to its end
+    // state for a visitor with prefers-reduced-motion set, instead of
+    // fading/sliding in — the same OS-level signal Tailwind's own
+    // `motion-reduce:` variant reads, applied at the animation-engine
+    // level so it can't be missed on a future addition here.
+    <MotionConfig reducedMotion="user">
+      <motion.div initial="initial" animate="in" variants={pageVariants} transition={pageTransition}>
+        {children}
+      </motion.div>
+    </MotionConfig>
   );
 }

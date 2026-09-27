@@ -5,11 +5,13 @@ import SiteFooter from "../../components/SiteFooter";
 import Button from "../../components/ui/Button";
 import ArrowLink from "../../components/ui/ArrowLink";
 import { summary, passions } from "../../../data";
+import { buildMetadata } from "../../lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "About — PromptAtWork",
   description: "AI Solution Engineer specializing in prompt engineering, generative AI, AI-assisted development and automation.",
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

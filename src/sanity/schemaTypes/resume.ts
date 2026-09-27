@@ -1,55 +1,136 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 // PRD §71. Singleton by convention — only one Resume document should exist;
 // enforced later via Studio structure (a fixed "Resume" entry rather than a
 // list), not yet critical while there's just one editor.
+//
+// This document is the single source for BOTH the /resume web page and the
+// downloadable PDF (/resume/download, generated on request). Edit here and
+// both update — there is no separate PDF file to replace.
+//
+// Roles are kept inline rather than referencing Experience documents: the
+// resume wording is tailored, and the Experience documents feed the
+// /experience page with their own wording.
+
+const metric = defineArrayMember({
+  type: "object",
+  name: "metric",
+  fields: [
+    defineField({ name: "value", type: "string", validation: (r) => r.required() }),
+    defineField({ name: "label", type: "string", validation: (r) => r.required() }),
+  ],
+  preview: { select: { title: "value", subtitle: "label" } },
+});
+
 export default defineType({
   name: "resume",
   title: "Resume",
   type: "document",
+  groups: [
+    { name: "header", title: "Header", default: true },
+    { name: "content", title: "Resume content" },
+    { name: "website", title: "Website only" },
+  ],
   fields: [
-    defineField({ name: "summary", type: "text", validation: (r) => r.required() }),
+    defineField({ name: "name", type: "string", group: "header", validation: (r) => r.required() }),
+    defineField({ name: "title", type: "string", group: "header", description: "e.g. AI Solution Engineer" }),
+    defineField({ name: "email", type: "string", group: "header" }),
+    defineField({ name: "phone", type: "string", group: "header" }),
+    defineField({ name: "location", type: "string", group: "header" }),
+    defineField({ name: "linkedin", type: "string", group: "header", description: "Without https://, e.g. linkedin.com/in/…" }),
+
+    defineField({
+      name: "summary",
+      type: "array",
+      group: "content",
+      description: "One entry per paragraph.",
+      of: [defineArrayMember({ type: "text", rows: 3 })],
+      validation: (r) => r.required().min(1),
+    }),
     defineField({
       name: "skills",
+      title: "Core skills",
       type: "array",
+      group: "content",
       of: [
-        {
+        defineArrayMember({
           type: "object",
           name: "skillGroup",
           fields: [
             defineField({ name: "category", type: "string", validation: (r) => r.required() }),
             defineField({ name: "items", type: "array", of: [{ type: "string" }] }),
           ],
-        },
+          preview: { select: { title: "category" } },
+        }),
       ],
     }),
     defineField({
-      name: "experience",
+      name: "roles",
+      title: "Experience",
       type: "array",
-      of: [{ type: "reference", to: [{ type: "experience" }] }],
-      description: "References the Experience documents — kept as a single source of career history, not duplicated here.",
+      group: "content",
+      description:
+        "Most recent first. Roles with highlights appear as full entries; roles without highlights are listed compactly under the 'Earlier roles heading'.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "role",
+          fields: [
+            defineField({ name: "role", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "company", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "location", type: "string" }),
+            defineField({ name: "startDate", type: "date", validation: (r) => r.required() }),
+            defineField({ name: "endDate", type: "date", description: "Leave empty for the current role" }),
+            defineField({ name: "highlights", type: "array", of: [{ type: "text", rows: 2 }] }),
+          ],
+          preview: { select: { title: "role", subtitle: "company" } },
+        }),
+      ],
     }),
     defineField({
-      name: "education",
+      name: "earlierRolesHeading",
+      type: "string",
+      group: "content",
+      initialValue: "Earlier — .NET Engineering",
+    }),
+    defineField({
+      name: "projects",
+      title: "Selected projects",
       type: "array",
+      group: "content",
       of: [
-        {
+        defineArrayMember({
           type: "object",
-          name: "educationEntry",
+          name: "resumeProject",
           fields: [
-            defineField({ name: "degree", type: "string", validation: (r) => r.required() }),
-            defineField({ name: "institution", type: "string" }),
-            defineField({ name: "details", type: "string" }),
-            defineField({ name: "year", type: "string" }),
+            defineField({ name: "name", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "tech", title: "Technologies", type: "array", of: [{ type: "string" }] }),
+            defineField({
+              name: "techLabel",
+              type: "string",
+              description: "Optional prefix before the technologies line in the PDF, e.g. 'Key technologies'",
+            }),
+            defineField({ name: "points", title: "Bullet points", type: "array", of: [{ type: "text", rows: 2 }] }),
+            defineField({
+              name: "description",
+              title: "Paragraphs",
+              type: "array",
+              description: "Use instead of (or alongside) bullet points for prose descriptions.",
+              of: [{ type: "text", rows: 4 }],
+            }),
+            defineField({ name: "badge", type: "string", description: "Website only — short card badge, e.g. RAG" }),
           ],
-        },
+          preview: { select: { title: "name" } },
+        }),
       ],
     }),
     defineField({
       name: "certifications",
       type: "array",
+      group: "content",
+      description: "Listed before education under 'Education & Certification'.",
       of: [
-        {
+        defineArrayMember({
           type: "object",
           name: "certificationEntry",
           fields: [
@@ -58,31 +139,57 @@ export default defineType({
             defineField({ name: "credentialId", type: "string" }),
             defineField({ name: "date", type: "string" }),
           ],
-        },
+        }),
       ],
     }),
     defineField({
-      name: "achievements",
+      name: "education",
       type: "array",
-      description: "Not in the PRD §71 field list, but the live Resume page has a Key Achievements section — added here rather than left unmigratable.",
+      group: "content",
       of: [
-        {
+        defineArrayMember({
           type: "object",
-          name: "achievementEntry",
+          name: "educationEntry",
+          fields: [
+            defineField({ name: "degree", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "institution", type: "string" }),
+            defineField({ name: "year", type: "string" }),
+          ],
+        }),
+      ],
+    }),
+    defineField({
+      name: "teaching",
+      type: "array",
+      group: "content",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "teachingEntry",
           fields: [
             defineField({ name: "title", type: "string", validation: (r) => r.required() }),
             defineField({ name: "description", type: "text", rows: 2 }),
           ],
-        },
+        }),
       ],
     }),
+
     defineField({
-      name: "interests",
+      name: "heroStats",
       type: "array",
-      of: [{ type: "string" }],
-      description: "Professional Interests section on the Resume page.",
+      group: "website",
+      description: "Floating stat cards next to the photo (3 fit best).",
+      of: [metric],
     }),
-    defineField({ name: "resumePdf", type: "file", description: "Downloadable PDF for the Export/Download action" }),
+    defineField({
+      name: "numbers",
+      title: "By the numbers",
+      type: "array",
+      group: "website",
+      description: "4 fit best.",
+      of: [metric],
+    }),
+
     defineField({ name: "updatedAt", type: "datetime" }),
   ],
   preview: {

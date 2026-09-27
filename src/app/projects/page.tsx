@@ -5,11 +5,13 @@ import Nav from "../../components/Nav";
 import SiteFooter from "../../components/SiteFooter";
 import SectionHeading from "../../components/ui/SectionHeading";
 import ProjectCard, { type ProjectCardData } from "../../components/ui/ProjectCard";
+import { buildMetadata } from "../../lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: "Projects & Case Studies — PromptAtWork",
   description: "AI solution engineering projects: workflow automation, RAG, AI-assisted development and AI creative work.",
-};
+  path: "/projects",
+});
 
 // Interim revalidation strategy until the Sanity webhook is wired up.
 export const revalidate = 60;

@@ -15,7 +15,7 @@ export default function ResumeCTA() {
             View Resume
           </Button>
           <Button
-            href="/resume"
+            href="/resume/download"
             variant="outlineDark"
             iconPosition="before"
             icon={

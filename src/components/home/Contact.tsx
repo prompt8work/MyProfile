@@ -1,9 +1,21 @@
+"use client";
+
+import { useActionState } from "react";
 import { personalInfo } from "../../../data";
 import SectionHeading from "../ui/SectionHeading";
+import { submitContactForm, type ContactFormState } from "../../app/contact/actions";
 
 const purposes = ["Job Opportunity", "AI Consulting", "Training", "Workshop", "Collaboration", "Speaking"];
 
+const initialState: ContactFormState = { status: "idle", message: "" };
+
+const inputClass =
+  "text-sm px-3.5 py-3 rounded-lg border border-neutral-300 bg-neutral-50 disabled:opacity-60";
+const errorTextClass = "text-xs text-error mt-1";
+
 export default function Contact() {
+  const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
+
   return (
     <section id="contact" className="w-full">
       <div className="max-w-[1280px] mx-auto px-5 sm:px-10 py-24 sm:py-28">
@@ -21,7 +33,7 @@ export default function Contact() {
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-plum-700)" strokeWidth="1.8"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></svg>
               </span>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-neutral-500">Email</span>
+                <span className="text-xs text-neutral-600">Email</span>
                 <span className="text-[14.5px] text-neutral-900 font-medium">{personalInfo.email}</span>
               </div>
             </div>
@@ -30,7 +42,7 @@ export default function Contact() {
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-plum-700)" strokeWidth="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2Z" /></svg>
               </span>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-neutral-500">Phone</span>
+                <span className="text-xs text-neutral-600">Phone</span>
                 <span className="text-[14.5px] text-neutral-900 font-medium">+91 {personalInfo.phone}</span>
               </div>
             </div>
@@ -39,13 +51,13 @@ export default function Contact() {
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-plum-700)" strokeWidth="1.8"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
               </span>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-neutral-500">Location</span>
+                <span className="text-xs text-neutral-600">Location</span>
                 <span className="text-[14.5px] text-neutral-900 font-medium">{personalInfo.location} · Open to remote</span>
               </div>
             </div>
 
             <div className="flex flex-col gap-2.5 mt-2">
-              <span className="text-xs text-neutral-500">Reach out about</span>
+              <span className="text-xs text-neutral-600">Reach out about</span>
               <div className="flex flex-wrap gap-2">
                 {purposes.map((p) => (
                   <span key={p} className="text-xs text-neutral-600 border border-neutral-300 rounded-full px-3 py-1.5">
@@ -56,25 +68,35 @@ export default function Contact() {
             </div>
           </div>
 
-          <form className="bg-white border border-neutral-200 rounded-[18px] p-8 flex flex-col gap-[18px]">
+          <form action={formAction} className="bg-white border border-neutral-200 rounded-[18px] p-8 flex flex-col gap-[18px]" noValidate>
+            {/* Honeypot — invisible to sighted users and screen readers (not
+                type="hidden", which some bots skip), real visitors never
+                fill it in. Non-empty means an automated submission. */}
+            <div className="absolute -left-[9999px]" aria-hidden="true">
+              <label htmlFor="company_website">Leave this field empty</label>
+              <input id="company_website" name="company_website" type="text" tabIndex={-1} autoComplete="off" />
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="c-name" className="text-xs font-semibold text-neutral-600">Your Name</label>
-                <input id="c-name" name="name" type="text" placeholder="Jane Doe" className="text-sm px-3.5 py-3 rounded-lg border border-neutral-300 bg-neutral-50" />
+                <input id="c-name" name="name" type="text" placeholder="Jane Doe" disabled={isPending} className={inputClass} />
+                {state.fieldErrors?.name && <p className={errorTextClass}>{state.fieldErrors.name}</p>}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="c-email" className="text-xs font-semibold text-neutral-600">Your Email</label>
-                <input id="c-email" name="email" type="email" placeholder="jane@company.com" className="text-sm px-3.5 py-3 rounded-lg border border-neutral-300 bg-neutral-50" />
+                <input id="c-email" name="email" type="email" placeholder="jane@company.com" disabled={isPending} className={inputClass} />
+                {state.fieldErrors?.email && <p className={errorTextClass}>{state.fieldErrors.email}</p>}
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="c-org" className="text-xs font-semibold text-neutral-600">Organization</label>
-                <input id="c-org" name="organization" type="text" placeholder="Optional" className="text-sm px-3.5 py-3 rounded-lg border border-neutral-300 bg-neutral-50" />
+                <input id="c-org" name="organization" type="text" placeholder="Optional" disabled={isPending} className={inputClass} />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="c-purpose" className="text-xs font-semibold text-neutral-600">Purpose</label>
-                <select id="c-purpose" name="purpose" className="text-sm px-3.5 py-3 rounded-lg border border-neutral-300 bg-neutral-50 text-neutral-900">
+                <select id="c-purpose" name="purpose" disabled={isPending} defaultValue="Job Opportunity" className={`${inputClass} text-neutral-900`}>
                   <option>Job Opportunity</option>
                   <option>AI Consulting</option>
                   <option>Training</option>
@@ -88,12 +110,25 @@ export default function Contact() {
             </div>
             <div className="flex flex-col gap-1.5">
               <label htmlFor="c-msg" className="text-xs font-semibold text-neutral-600">Your Message</label>
-              <textarea id="c-msg" name="message" rows={4} placeholder="Tell me a bit about what you have in mind..." className="text-sm px-3.5 py-3 rounded-lg border border-neutral-300 bg-neutral-50 resize-y" />
+              <textarea id="c-msg" name="message" rows={4} placeholder="Tell me a bit about what you have in mind..." disabled={isPending} className={`${inputClass} resize-y`} />
+              {state.fieldErrors?.message && <p className={errorTextClass}>{state.fieldErrors.message}</p>}
             </div>
-            <button type="submit" className="self-start inline-flex items-center gap-2.5 bg-neutral-900 text-white text-[14.5px] font-semibold px-6 py-3.5 rounded-xl hover:bg-neutral-800 transition-colors">
-              Send Message
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="self-start inline-flex items-center gap-2.5 bg-neutral-900 text-white text-[14.5px] font-semibold px-6 py-3.5 rounded-xl hover:bg-neutral-800 transition-colors disabled:opacity-60"
+            >
+              {isPending ? "Sending…" : "Send Message"}
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z" /></svg>
             </button>
+
+            {state.status === "success" && (
+              <p role="status" className="text-sm text-success font-medium">{state.message}</p>
+            )}
+            {state.status === "error" && (
+              <p role="alert" className="text-sm text-error font-medium">{state.message}</p>
+            )}
           </form>
         </div>
       </div>
