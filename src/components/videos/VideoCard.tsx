@@ -18,6 +18,15 @@ export type VideoCardData = {
 // "YouTube: thumbnails only, no embedded players on initial load, embed
 // on click"), so a page full of videos doesn't pay for N embedded players
 // nobody asked to play yet.
+//
+// timeZone: "UTC" on the date below isn't cosmetic — without it,
+// toLocaleDateString() formats in whatever OS timezone is running the
+// code, which differs between Vercel's server (UTC) and a visitor's
+// browser. Since this is a Client Component, that date re-renders during
+// hydration and a day-boundary timestamp can format to a different
+// calendar day server-side vs. client-side, which React treats as a
+// hydration mismatch (caught live on the deployed site, not in local dev
+// — production's stricter hydration check surfaced it, dev mode didn't).
 export default function VideoCard({ video }: { video: VideoCardData }) {
   const [playing, setPlaying] = useState(false);
 
@@ -64,7 +73,7 @@ export default function VideoCard({ video }: { video: VideoCardData }) {
         </a>
         {video.publishedAt && (
           <span className="text-xs text-neutral-600">
-            {new Date(video.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            {new Date(video.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}
           </span>
         )}
       </div>

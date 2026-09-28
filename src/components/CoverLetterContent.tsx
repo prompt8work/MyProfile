@@ -9,10 +9,18 @@ const sectionHeading =
   "text-base font-bold tracking-wide text-neutral-900 border-b-2 border-plum-200 pb-2 mb-3 print:text-sm print:pb-1 print:mb-2";
 
 export default function CoverLetterContent() {
+  // "Today's" date, formatted once server-side and again on client
+  // hydration (same VideoCard/BatchCard hydration-mismatch pattern —
+  // timeZone: "UTC" fixes the timezone half of it) — the remaining sliver
+  // of risk is the render happening to straddle a UTC midnight between
+  // server and client, which suppressHydrationWarning on the element
+  // below accepts as expected for genuinely wall-clock content, the same
+  // way <body> already does for the ColorZilla extension mismatch.
   const currentDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 
   const handleExportPDF = () => {
@@ -76,7 +84,7 @@ export default function CoverLetterContent() {
 
           <div className="p-4 md:p-8 print:p-4">
             <div className="mb-6 print:mb-3">
-              <p className="text-sm text-neutral-600 print:text-xs">{currentDate}</p>
+              <p className="text-sm text-neutral-600 print:text-xs" suppressHydrationWarning>{currentDate}</p>
             </div>
 
             <div className="mb-6 print:mb-3">

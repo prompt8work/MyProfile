@@ -8,8 +8,14 @@ const initialState: RegistrationFormState = { status: "idle", message: "" };
 const inputClass = "text-sm px-3.5 py-3 rounded-lg border border-neutral-300 bg-neutral-50 disabled:opacity-60";
 const errorTextClass = "text-xs text-error mt-1";
 
+// timeZone: "UTC" avoids a hydration mismatch — this is a Client
+// Component, so this date renders once server-side and again during
+// client hydration; without a fixed zone, a day-boundary timestamp can
+// format to a different calendar day between Vercel's server (UTC) and a
+// visitor's local browser, which React flags as a mismatch (found live on
+// VideoCard, which has the identical pattern — see its own comment).
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  return new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 }
 
 export default function BatchCard({
