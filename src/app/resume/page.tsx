@@ -8,19 +8,17 @@ import {
   BriefcaseBusiness,
   ChartNoAxesColumn,
   CodeXml,
-  Download,
   FolderKanban,
   GraduationCap,
   History,
   Mail,
   MapPin,
   MessageCircle,
-  Phone,
   Send,
   UserRound,
 } from "lucide-react";
 import LinkedinIcon from "../../components/icons/LinkedinIcon";
-import { RESUME_PDF_PATH, educationLines, formatPeriod, getResume, pdfFilename, splitRoles } from "../../lib/resume";
+import { educationLines, formatPeriod, getResume, splitRoles } from "../../lib/resume";
 import { buildMetadata } from "../../lib/site";
 
 export const metadata: Metadata = buildMetadata({
@@ -47,19 +45,6 @@ const navLinks = [
 
 const card =
   "rounded-2xl border border-cyan-400/15 bg-[#0a1a33]/60 backdrop-blur-sm shadow-[0_0_0_1px_rgba(79,214,227,0.03),0_20px_50px_rgba(0,0,0,0.35)]";
-
-function DownloadButton({ filename, className = "" }: { filename: string; className?: string }) {
-  return (
-    <a
-      href={RESUME_PDF_PATH}
-      download={filename}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-r from-cyan-400 to-[#22d3ee] px-5 py-3 text-sm font-semibold text-[#03101f] shadow-[0_0_24px_rgba(79,214,227,0.35)] transition hover:brightness-110 hover:text-[#03101f] ${className}`}
-    >
-      Download CV
-      <Download className="h-4 w-4" />
-    </a>
-  );
-}
 
 function CardTitle({ icon, children, action }: { icon: ReactNode; children: ReactNode; action?: ReactNode }) {
   return (
@@ -100,9 +85,7 @@ function InfoRow({ icon, label, children }: { icon: ReactNode; label: string; ch
 export default async function Resume() {
   const resume = await getResume();
   const { featured, earlier } = splitRoles(resume.roles);
-  const filename = pdfFilename(resume);
   const [intro, ...aboutParagraphs] = resume.summary;
-  const tel = resume.phone ? `tel:${resume.phone.replace(/\s/g, "")}` : undefined;
   const linkClass = "text-slate-100 hover:text-cyan-400";
   const contactRows = (
     <>
@@ -110,13 +93,6 @@ export default async function Resume() {
         <InfoRow icon={<Mail className="h-4 w-4" />} label="Email">
           <a href={`mailto:${resume.email}`} className={linkClass}>
             {resume.email}
-          </a>
-        </InfoRow>
-      )}
-      {resume.phone && (
-        <InfoRow icon={<Phone className="h-4 w-4" />} label="Phone">
-          <a href={tel} className={linkClass}>
-            {resume.phone}
           </a>
         </InfoRow>
       )}
@@ -161,14 +137,6 @@ export default async function Resume() {
               </Link>
             ))}
           </nav>
-          <a
-            href={RESUME_PDF_PATH}
-            download={filename}
-            className="inline-flex items-center gap-2 rounded-full border border-cyan-400/40 px-4 py-2 text-sm text-slate-100 transition hover:bg-cyan-400/10 hover:text-white"
-          >
-            <Download className="h-4 w-4 text-cyan-400" />
-            Download CV
-          </a>
         </div>
       </header>
 
@@ -187,20 +155,18 @@ export default async function Resume() {
             </h1>
             {intro && <p className="mt-6 max-w-[520px] text-[15px] leading-relaxed text-slate-300">{intro}</p>}
             <div className="mt-8 flex flex-wrap gap-3">
-              <DownloadButton filename={filename} />
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-lg border border-cyan-400/40 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-cyan-400/10 hover:text-white"
+                className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-cyan-400 to-[#22d3ee] px-5 py-3 text-sm font-semibold text-[#03101f] shadow-[0_0_24px_rgba(79,214,227,0.35)] transition hover:brightness-110 hover:text-[#03101f]"
               >
                 Let&apos;s Talk
-                <MessageCircle className="h-4 w-4 text-cyan-400" />
+                <MessageCircle className="h-4 w-4" />
               </Link>
             </div>
             <div className="mt-6 flex gap-3">
               {[
                 resume.linkedin && { href: `https://${resume.linkedin}`, label: "LinkedIn", icon: <LinkedinIcon className="h-4 w-4" />, external: true },
                 resume.email && { href: `mailto:${resume.email}`, label: "Email", icon: <Mail className="h-4 w-4" /> },
-                tel && { href: tel, label: "Phone", icon: <Phone className="h-4 w-4" /> },
               ]
                 .filter((s) => !!s)
                 .map((s) => (
@@ -443,13 +409,6 @@ export default async function Resume() {
               >
                 Send Message <ArrowRight className="h-4 w-4" />
               </Link>
-              <a
-                href={RESUME_PDF_PATH}
-                download={filename}
-                className="inline-flex items-center gap-2 rounded-lg border border-cyan-400/40 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-cyan-400/10 hover:text-white"
-              >
-                Download CV <Download className="h-4 w-4 text-cyan-400" />
-              </a>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 border-cyan-400/10 sm:grid-cols-2 md:border-l md:pl-8">

@@ -162,7 +162,6 @@ export function ResumePdf({ resume }: { resume: Resume }) {
           </View>
           <View>
             {resume.email && <Text style={s.contact}>{resume.email}</Text>}
-            {resume.phone && <Text style={s.contact}>{resume.phone}</Text>}
             {resume.location && <Text style={s.contact}>{resume.location}</Text>}
             {resume.linkedin && (
               <Link src={`https://${resume.linkedin}`} style={[s.contact, s.contactLink]}>

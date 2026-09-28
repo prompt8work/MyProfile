@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { personalInfo } from "../../../data";
 import SectionHeading from "../ui/SectionHeading";
+import LinkedinIcon from "../icons/LinkedinIcon";
 import { submitContactForm, type ContactFormState } from "../../app/contact/actions";
 
 const purposes = ["Job Opportunity", "AI Consulting", "Training", "Workshop", "Collaboration", "Speaking"];
@@ -39,11 +40,18 @@ export default function Contact() {
             </div>
             <div className="flex gap-3.5 items-start">
               <span className="w-10 h-10 rounded-[10px] bg-plum-100 flex items-center justify-center shrink-0">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--color-plum-700)" strokeWidth="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.7a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2Z" /></svg>
+                <LinkedinIcon className="w-[17px] h-[17px] text-plum-700" />
               </span>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs text-neutral-600">Phone</span>
-                <span className="text-[14.5px] text-neutral-900 font-medium">+91 {personalInfo.phone}</span>
+                <span className="text-xs text-neutral-600">LinkedIn</span>
+                <a
+                  href={`https://${personalInfo.linkedin}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[14.5px] text-neutral-900 font-medium hover:text-plum-600 transition-colors"
+                >
+                  {personalInfo.linkedin.replace("linkedin.com/in/", "in/")}
+                </a>
               </div>
             </div>
             <div className="flex gap-3.5 items-start">

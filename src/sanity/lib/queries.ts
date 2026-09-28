@@ -78,7 +78,7 @@ export const experienceQuery = groq`
 // and the generated PDF (/resume/download) — see src/lib/resume.ts.
 export const resumeQuery = groq`
   *[_type == "resume"][0] {
-    name, title, email, phone, location, linkedin,
+    name, title, email, location, linkedin,
     summary,
     "skills": skills[]{ category, "items": coalesce(items, []) },
     "roles": roles[]{ role, company, location, startDate, endDate, "highlights": coalesce(highlights, []) },

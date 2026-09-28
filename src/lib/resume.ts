@@ -29,7 +29,6 @@ export type Resume = {
   name: string;
   title?: string;
   email?: string;
-  phone?: string;
   location?: string;
   linkedin?: string;
   summary: string[];

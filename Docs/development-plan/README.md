@@ -22,7 +22,9 @@ The PRD specifies **Next.js + React + TypeScript + Sanity CMS + Supabase Postgre
 | [5](05-training-platform.md) | Training Platform | Courses, Batches, Schedule, Registration | §37–42, §69, §74–75 |
 | [6](06-hardening-polish.md) | Hardening & Polish | SEO, analytics, accessibility, admin, security | §76–99 |
 | [7](07-launch.md) | Launch | Definition of Done checklist, go-live on promptatwork.com | §106 |
-| [8](08-v2-future.md) | V2 — AI Assistant | Python/FastAPI + RAG over published content | §108 |
+| [9](09-v2-data-recuration.md) | V2.0 — Data Re-curation | Content/IA/data-model re-curation per the site's own [master content doc](../v2.0-data-driven-updates/PROMPTATWORK_WEBSITE_DATA_MASTER_CONTEXT.md) — runs *before* Phase 8, per user direction | (site-owned doc, not PRD) |
+| [8](08-v2-future.md) | V2 — AI Assistant | Python/FastAPI + RAG over published content — deferred until Phase 9 lands real content | §108 |
+| [10](10-v3-admin-crm.md) | V3 — Admin CRM Dashboard | Brainstorm only — unified Sanity + Supabase admin, Google OAuth2 single-user login, dynamic content editor | (site-owned doc, not PRD) |
 
 Phase 4 has two follow-on change docs, both already implemented and folded into [04-ai-lab-content.md](04-ai-lab-content.md)'s own Status section — read that file first; the two below are the original change requests, kept for history:
 - [4.1](04.1-ai-lab-content-tools.md) — evolved Tools from a simple explorer into a full Tool Research & Learning Repository (research content, best-use-cases, downloadable resources, search/filter).

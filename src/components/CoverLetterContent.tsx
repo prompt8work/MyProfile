@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Mail, Phone, MapPin } from "lucide-react";
+import { Download, Mail, MapPin } from "lucide-react";
 import PageTransition from "./PageTransition";
 import LinkedinIcon from "./icons/LinkedinIcon";
 import { personalInfo, coverLetter } from "../../data";
@@ -51,12 +51,6 @@ export default function CoverLetterContent() {
                 {personalInfo.title}
               </p>
               <div className="flex flex-col md:flex-row items-center md:items-start gap-1 md:gap-4 text-xs print:flex-row print:gap-3 print:text-xs">
-                <div className="flex items-center gap-1">
-                  <Phone className="w-3 h-3 md:hidden print:hidden" />
-                  <a href={`tel:${personalInfo.phone}`} className="text-white hover:text-cyan-400 transition-colors">
-                    {personalInfo.phone}
-                  </a>
-                </div>
                 <div className="flex items-center gap-1">
                   <Mail className="w-3 h-3 md:hidden print:hidden" />
                   <a href={`mailto:${personalInfo.email}`} className="text-white hover:text-cyan-400 transition-colors">
