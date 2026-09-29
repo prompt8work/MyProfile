@@ -1,6 +1,8 @@
 import { defineField, defineType } from "sanity";
 
 // PRD §67, categories from §26.
+const difficulties = ["Beginner", "Intermediate", "Advanced"];
+
 const categories = [
   "Coding",
   "Research",
@@ -33,12 +35,27 @@ export default defineType({
     defineField({ name: "variables", type: "array", of: [{ type: "string" }] }),
     defineField({ name: "exampleInput", type: "text" }),
     defineField({ name: "exampleOutput", type: "text" }),
+    defineField({
+      name: "expectedBehavior",
+      title: "Expected Behavior",
+      type: "text",
+      description: "Master content doc §21 — what a correct response from this prompt should look like, distinct from one literal example output.",
+    }),
+    defineField({
+      name: "failureModes",
+      title: "Failure Modes",
+      type: "array",
+      of: [{ type: "string" }],
+      description: "Master content doc §21 — documented ways this prompt has been observed to go wrong.",
+    }),
+    defineField({ name: "difficulty", type: "string", options: { list: difficulties } }),
     defineField({ name: "tool", type: "reference", to: [{ type: "tool" }] }),
-    defineField({ name: "tips", type: "text" }),
+    defineField({ name: "tips", title: "Tips / Evaluation Notes", type: "text" }),
     defineField({
       name: "relatedContent",
       type: "array",
-      of: [{ type: "reference", to: [{ type: "project" }, { type: "tool" }] }],
+      description: "Same unified Related Content model every other content type uses (see tool.ts) — widened from project|tool only, so a prompt can link to the experiment or automation it actually came from.",
+      of: [{ type: "reference", to: [{ type: "project" }, { type: "tool" }, { type: "prompt" }, { type: "experiment" }, { type: "automation" }, { type: "blog" }, { type: "training" }] }],
     }),
   ],
   preview: {

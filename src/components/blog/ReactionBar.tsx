@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { submitReaction } from "../../app/blog/actions";
+import BurstEmoji from "../motion/BurstEmoji";
 import type { ReactionCounts, ReactionType } from "../../supabase/blogReactionRepository";
 
 const reactions: { type: ReactionType; label: string; emoji: string }[] = [
@@ -31,10 +32,17 @@ function getVisitorHash(): string {
   }
 }
 
-export default function ReactionBar({ contentId, initialCounts }: { contentId: string; initialCounts: ReactionCounts }) {
+export default function ReactionBar({
+  contentId,
+  initialCounts,
+}: {
+  contentId: string;
+  initialCounts: ReactionCounts;
+}) {
   const [counts, setCounts] = useState(initialCounts);
   const [reacted, setReacted] = useState<Set<ReactionType>>(new Set());
   const [visitorHash, setVisitorHash] = useState("");
+  const [bursts, setBursts] = useState<Partial<Record<ReactionType, number>>>({});
 
   useEffect(() => {
     // Reading localStorage has to happen after mount (SSR has no
@@ -60,6 +68,7 @@ export default function ReactionBar({ contentId, initialCounts }: { contentId: s
     if (reacted.has(type) || !visitorHash) return;
 
     setCounts((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+    setBursts((prev) => ({ ...prev, [type]: (prev[type] ?? 0) + 1 }));
     const next = new Set(reacted).add(type);
     setReacted(next);
     try {
@@ -84,13 +93,13 @@ export default function ReactionBar({ contentId, initialCounts }: { contentId: s
           type="button"
           onClick={() => handleClick(r.type)}
           disabled={reacted.has(r.type)}
-          className={`inline-flex items-center gap-1.5 text-sm px-3.5 py-2 rounded-full border transition-colors ${
+          className={`motion-btn inline-flex items-center gap-1.5 text-sm px-3.5 py-2 rounded-full border ${
             reacted.has(r.type)
               ? "border-plum-300 bg-plum-100 text-plum-700"
               : "border-neutral-300 text-neutral-600 hover:border-plum-400 hover:text-plum-700"
           }`}
         >
-          <span aria-hidden="true">{r.emoji}</span>
+          <BurstEmoji emoji={r.emoji} burst={bursts[r.type] ?? 0} />
           {counts[r.type] > 0 && <span className="font-semibold">{counts[r.type]}</span>}
           <span className="sr-only">{r.label}</span>
         </button>

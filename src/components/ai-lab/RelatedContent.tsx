@@ -1,6 +1,9 @@
 import ArrowLink from "../ui/ArrowLink";
+import Reveal from "../motion/Reveal";
+import { StaggerGrid, StaggerItem } from "../motion/StaggerGrid";
+import { BlockLabel } from "../ui/ContentSection";
 
-type RelatedItem = {
+export type RelatedItem = {
   _type: "project" | "tool" | "prompt" | "experiment" | "automation" | "blog" | "training";
   slug: string;
   title?: string;
@@ -8,7 +11,7 @@ type RelatedItem = {
 };
 
 const hrefFor: Record<RelatedItem["_type"], (slug: string) => string> = {
-  project: (slug) => `/projects/${slug}`,
+  project: (slug) => `/ai-lab/work/${slug}`,
   tool: (slug) => `/ai-lab/tools/${slug}`,
   prompt: (slug) => `/ai-lab/prompts/${slug}`,
   experiment: (slug) => `/ai-lab/experiments/${slug}`,
@@ -17,28 +20,23 @@ const hrefFor: Record<RelatedItem["_type"], (slug: string) => string> = {
   training: (slug) => `/training/${slug}`,
 };
 
-export default function RelatedContent({
-  items,
-  theme = "dark",
-}: {
-  items?: RelatedItem[];
-  theme?: "light" | "dark";
-}) {
+export default function RelatedContent({ items, heading = "Related content" }: { items?: RelatedItem[]; heading?: string }) {
   if (!items || items.length === 0) return null;
 
-  const headingColor = theme === "dark" ? "text-cyan-500" : "text-plum-600";
-  const borderColor = theme === "dark" ? "border-neutral-800" : "border-neutral-200";
-
   return (
-    <div className={`flex flex-col gap-2.5 pt-4 border-t ${borderColor}`}>
-      <h2 className={`font-mono text-xs tracking-wide font-semibold ${headingColor}`}>RELATED CONTENT</h2>
-      <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-3 pt-6 border-t border-neutral-200">
+      <Reveal>
+        <BlockLabel>{heading}</BlockLabel>
+      </Reveal>
+      <StaggerGrid className="flex flex-col gap-2">
         {items.map((item) => (
-          <ArrowLink key={`${item._type}-${item.slug}`} href={hrefFor[item._type](item.slug)} theme={theme} size="sm">
-            {item.title ?? item.name}
-          </ArrowLink>
+          <StaggerItem key={`${item._type}-${item.slug}`}>
+            <ArrowLink href={hrefFor[item._type](item.slug)} size="sm">
+              {item.title ?? item.name}
+            </ArrowLink>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerGrid>
     </div>
   );
 }

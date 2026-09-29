@@ -3,63 +3,27 @@
 // Cover Letter pages unchanged. This becomes a Sanity-driven content type
 // in Phase 2 — shaped with that migration in mind.
 
+// Positioning per Docs/v2.0-data-driven-updates/PROMPTATWORK_WEBSITE_DATA_MASTER_CONTEXT.md
+// §44/§56: "Full-Stack AI Engineer" as primary identity, "already
+// practicing" framing rather than a career-transition narrative. The
+// homepage previously led with a set of global numeric claims (500+
+// Production Prompts, 99.9% Structured Output Accuracy, etc.) that the
+// master doc's own §7/§51 rules flag as unsupported at the global level —
+// removed per that governance rule; the real, contextualized numbers stay
+// inside the specific project case studies they came from.
 export const hero = {
-  eyebrow: "AI SOLUTION ENGINEER · PROMPT ENGINEER",
-  heading: "I build practical AI solutions through prompts, code, automation and experimentation.",
+  eyebrow: "FULL-STACK AI ENGINEER",
+  // Rotates inside the hero pill, first entry is what the server renders.
+  roles: ["PROMPT ENGINEER", "TRAINER", "BUILDER"],
+  heading: "I build practical Generative AI, RAG and AI-powered applications — end to end.",
   description:
-    "I explore, design and build AI-powered systems across prompt engineering, RAG, AI-assisted development, automation and emerging AI tools.",
+    "A software engineering foundation combined with hands-on Generative AI practice: prompt engineering, RAG, multi-LLM systems, AI-assisted development and automation — designed, built and shipped as real, working products, not just experiments.",
   ctaPrimary: "Explore My Work",
   ctaSecondary: "View Resume",
   ctaTertiary: "Let's Talk",
 };
 
-export const metrics = [
-  { value: "500+", label: "Production Prompts" },
-  { value: "18", label: "Generation Modules" },
-  { value: "99.9%", label: "Structured Output Accuracy" },
-  { value: "80%", label: "LLM Cost Reduction" },
-  { value: "100+", label: "Concurrent Users" },
-  { value: "89%", label: "Retrieval Relevance" },
-];
-
-export const expertise = [
-  {
-    title: "Prompt Engineering",
-    items: ["Prompt systems", "Structured outputs", "Evaluation & regression testing", "Guardrails"],
-  },
-  {
-    title: "AI Solution Engineering",
-    items: ["AI architecture", "APIs & LLM integration", "Production systems"],
-  },
-  {
-    title: "RAG",
-    items: ["Embeddings & vector search", "Hybrid retrieval, RRF", "Retrieval evaluation"],
-  },
-  {
-    title: "AI Automation",
-    items: ["AI workflows & APIs", "Agents", "Process automation"],
-  },
-  {
-    title: "AI-Assisted Development",
-    items: ["BMAD workflow, Claude Code", "AI coding & testing", "AI documentation"],
-  },
-  {
-    title: "AI Tool Exploration",
-    items: ["Tool research & comparison", "Hands-on experiments", "Practical tutorials"],
-  },
-];
-
-// Project data moved to data/projects.ts (the canonical, PRD-shaped source
-// for both this homepage preview and the /projects pages). Import from
-// there directly — e.g. `import { publicProjects } from "../../../data/projects"`.
-
-export const aiLabLinks = [
-  { title: "Tools", href: "/ai-lab/tools" },
-  { title: "Experiments", href: "/ai-lab/experiments" },
-  { title: "Prompt Library", href: "/ai-lab/prompts" },
-  { title: "Automations", href: "/ai-lab/automations" },
-];
-
+// "How I work" — shown on the AI Lab Overview page (src/app/ai-lab/page.tsx).
 export const process = [
   { step: "01", title: "Explore", description: "Discover new AI tools, models and techniques worth testing." },
   { step: "02", title: "Build", description: "Design and build a practical solution — prompt, code or automation." },

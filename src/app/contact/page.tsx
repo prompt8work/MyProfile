@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Nav from "../../components/Nav";
+import PageTransition from "../../components/PageTransition";
 import SiteFooter from "../../components/SiteFooter";
 import Contact from "../../components/home/Contact";
 import { buildMetadata } from "../../lib/site";
@@ -12,12 +13,14 @@ export const metadata: Metadata = buildMetadata({
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <PageTransition className="min-h-screen bg-neutral-50">
       <Nav />
-      <div className="pt-4">
-        <Contact />
-      </div>
+      <main>
+        <div className="pt-4">
+          <Contact headingLevel="page" />
+        </div>
+      </main>
       <SiteFooter />
-    </div>
+    </PageTransition>
   );
 }

@@ -1,18 +1,24 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Nav from "../../../../components/Nav";
-import SiteFooter from "../../../../components/SiteFooter";
+import PageTransition from "../../../../components/PageTransition";
+import DocsArticle from "../../../../components/docs/DocsArticle";
+import DocsHeader, { DocsTag } from "../../../../components/docs/DocsHeader";
 import ArrowLink from "../../../../components/ui/ArrowLink";
-import RelatedContent from "../../../../components/ai-lab/RelatedContent";
+import ContentSection, { BlockLabel } from "../../../../components/ui/ContentSection";
+import Reveal from "../../../../components/motion/Reveal";
+import { Timeline, TimelineItem } from "../../../../components/motion/Timeline";
+import RelatedContent, { type RelatedItem } from "../../../../components/ai-lab/RelatedContent";
+import JsonLd from "../../../../components/JsonLd";
 import { client } from "../../../../sanity/lib/client";
 import { automationBySlugQuery, automationSlugsQuery } from "../../../../sanity/lib/queries";
-import { buildMetadata } from "../../../../lib/site";
+import { buildBreadcrumbJsonLd, buildMetadata } from "../../../../lib/site";
 
 export const revalidate = 60;
 
 type AutomationDetail = {
   slug: string;
   title: string;
+  category?: string;
   description: string;
   problem?: string;
   trigger?: string;
@@ -20,10 +26,12 @@ type AutomationDetail = {
   architecture?: string;
   input?: string;
   output?: string;
+  integrations?: string[];
   limitations?: string;
   securityNotes?: string;
+  learnings?: string;
   tools?: { slug: string; name: string }[];
-  relatedContent?: { _type: "project" | "tool" | "prompt"; slug: string; title?: string; name?: string }[];
+  relatedContent?: RelatedItem[];
 };
 
 export async function generateStaticParams() {
@@ -31,11 +39,7 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const automation: AutomationDetail | null = await client.fetch(automationBySlugQuery, { slug });
   if (!automation) return {};
@@ -47,81 +51,77 @@ export async function generateMetadata({
   });
 }
 
-function Section({ heading, body }: { heading: string; body?: string }) {
-  if (!body) return null;
-  return (
-    <div className="flex flex-col gap-2.5">
-      <h2 className="font-mono text-xs tracking-wide text-cyan-500 font-semibold">{heading.toUpperCase()}</h2>
-      <p className="text-[15px] leading-relaxed text-neutral-300 whitespace-pre-wrap">{body}</p>
-    </div>
-  );
-}
-
-export default async function AutomationDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function AutomationDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const automation: AutomationDetail | null = await client.fetch(automationBySlugQuery, { slug });
   if (!automation) notFound();
 
   return (
-    <div className="min-h-screen bg-neutral-900">
-      <Nav />
-      <section className="w-full bg-neutral-900 min-h-screen">
-        <div className="max-w-[800px] mx-auto px-5 sm:px-10 pt-16 sm:pt-20 pb-24 sm:pb-28 flex flex-col gap-10">
-          <div className="flex flex-col gap-5">
-            <ArrowLink href="/ai-lab/automations" theme="dark" size="sm" direction="back">
-              Automation Gallery
-            </ArrowLink>
-            <span className="font-mono text-xs tracking-wide text-cyan-500 font-semibold">AUTOMATION</span>
-            <h1 className="font-display text-3xl sm:text-[42px] font-semibold text-white leading-tight">{automation.title}</h1>
-            <p className="text-[16px] leading-relaxed text-neutral-300 max-w-[600px]">{automation.description}</p>
+    <PageTransition key={slug}>
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "AI Lab", path: "/ai-lab" },
+          { name: "Automations", path: "/ai-lab/automations" },
+          { name: automation.title, path: `/ai-lab/automations/${automation.slug}` },
+        ])}
+      />
+      <DocsArticle>
+        <DocsHeader
+          eyebrow={["Automation", automation.category].filter(Boolean).join(" / ")}
+          title={automation.title}
+          description={automation.description}
+        >
+          {automation.tools && automation.tools.length > 0 && (
+            <div className="flex gap-4 flex-wrap">
+              {automation.tools.map((t) => (
+                <ArrowLink key={t.slug} href={`/ai-lab/tools/${t.slug}`} size="sm">
+                  {t.name}
+                </ArrowLink>
+              ))}
+            </div>
+          )}
+        </DocsHeader>
 
-            {automation.tools && automation.tools.length > 0 && (
-              <div className="flex gap-4 flex-wrap">
-                {automation.tools.map((t) => (
-                  <ArrowLink key={t.slug} href={`/ai-lab/tools/${t.slug}`} theme="dark" size="sm">
-                    {t.name}
-                  </ArrowLink>
-                ))}
-              </div>
-            )}
-          </div>
-
+        <div className="flex flex-col gap-10">
           {automation.steps && automation.steps.length > 0 && (
-            <div className="flex flex-col gap-2.5">
-              <h2 className="font-mono text-xs tracking-wide text-cyan-500 font-semibold">WORKFLOW</h2>
-              <div className="flex flex-col sm:flex-row sm:items-stretch gap-2 sm:gap-0">
+            <div className="flex flex-col gap-5">
+              <Reveal>
+                <BlockLabel>Workflow</BlockLabel>
+              </Reveal>
+              <Timeline markers="number">
                 {automation.steps.map((step, i) => (
-                  <div key={`${step.label}-${i}`} className="flex sm:flex-1 items-center">
-                    <div className="flex-1 bg-neutral-800 border border-neutral-700 rounded-xl p-4 flex flex-col gap-1">
-                      <span className="font-mono text-[10.5px] text-cyan-500 tracking-wide">{step.label.toUpperCase()}</span>
-                      {step.description && <p className="text-[13px] text-neutral-300 leading-snug">{step.description}</p>}
-                    </div>
-                    {i < automation.steps!.length - 1 && (
-                      <span className="hidden sm:flex items-center px-2 text-cyan-600 shrink-0">→</span>
-                    )}
-                  </div>
+                  <TimelineItem key={`${step.label}-${i}`} title={step.label}>
+                    {step.description && <p className="text-sm text-neutral-600 leading-relaxed">{step.description}</p>}
+                  </TimelineItem>
                 ))}
-              </div>
+              </Timeline>
             </div>
           )}
 
-          <div className="flex flex-col gap-8">
-            <Section heading="Problem" body={automation.problem} />
-            <Section heading="Architecture" body={automation.architecture} />
-            <Section heading="Input" body={automation.input} />
-            <Section heading="Output" body={automation.output} />
-            <Section heading="Limitations" body={automation.limitations} />
-            <Section heading="Security Notes" body={automation.securityNotes} />
+          <ContentSection heading="Problem" body={automation.problem} />
+          <ContentSection heading="Architecture" body={automation.architecture} />
+          <ContentSection heading="Input" body={automation.input} />
+          <ContentSection heading="Output" body={automation.output} />
 
-            <RelatedContent items={automation.relatedContent} />
-          </div>
+          {automation.integrations && automation.integrations.length > 0 && (
+            <Reveal className="flex flex-col gap-3">
+              <BlockLabel>Integrations</BlockLabel>
+              <div className="flex flex-wrap gap-1.5">
+                {automation.integrations.map((i) => (
+                  <DocsTag key={i}>{i}</DocsTag>
+                ))}
+              </div>
+            </Reveal>
+          )}
+
+          <ContentSection heading="Limitations" body={automation.limitations} />
+          <ContentSection heading="Security Notes" body={automation.securityNotes} />
+          <ContentSection heading="Learnings" body={automation.learnings} />
+
+          <RelatedContent items={automation.relatedContent} />
         </div>
-      </section>
-      <SiteFooter />
-    </div>
+      </DocsArticle>
+    </PageTransition>
   );
 }

@@ -18,12 +18,13 @@ export const currentExperience = {
 export const previousExperience = [
   {
     company: "Dhande Creative",
-    role: "Co-Founder and Technical Analyst",
-    period: "Jan 2020 – Dec 2023",
+    role: "Founder — Project & Stakeholder Management",
+    period: "May 2018 – Jan 2024",
     location: "Indore, M.P.",
     points: [
-      "Delivered custom software solutions and technical consulting to clients across various industries",
-      "Built client-facing applications demonstrating emerging Web, Mobile, and Cloud technologies"
+      "Founded and ran an independent IT consulting practice, managing client engagements end to end",
+      "Led project management and stakeholder coordination across client engagements, from requirements through delivery",
+      "Served as the primary point of collaboration between clients and delivery teams on custom software projects"
     ]
   },
   {

@@ -151,7 +151,8 @@ export const toolBySlugQuery = groq`
     "resources": resources[]{ title, resourceType, description, version, publishedAt, updatedAt, "fileUrl": file.asset->url, "fileName": file.asset->originalFilename },
     ${relatedContentProjection},
     "relatedExperiments": *[_type == "experiment" && references(^._id)]{ "slug": slug.current, title, objective },
-    "relatedBlogs": *[_type == "blog" && references(^._id) && publishedAt <= now()]{ "slug": slug.current, title, excerpt }
+    "relatedBlogs": *[_type == "blog" && references(^._id) && publishedAt <= now()]{ "slug": slug.current, title, excerpt },
+    "relatedProjects": *[_type == "project" && visibility != "private" && references(^._id)]{ "slug": slug.current, title, summary }
   }
 `;
 
@@ -177,6 +178,9 @@ export const promptBySlugQuery = groq`
     variables,
     exampleInput,
     exampleOutput,
+    expectedBehavior,
+    "failureModes": coalesce(failureModes, []),
+    difficulty,
     tips,
     "tool": tool->{ "slug": slug.current, name },
     ${relatedContentProjection}
@@ -199,6 +203,7 @@ export const experimentBySlugQuery = groq`
     "slug": slug.current,
     title,
     objective,
+    hypothesis,
     problem,
     setup,
     promptOrWorkflow,
@@ -207,6 +212,8 @@ export const experimentBySlugQuery = groq`
     whatWorked,
     whatFailed,
     learning,
+    decision,
+    nextStep,
     useCases,
     "tool": tool->{ "slug": slug.current, name },
     ${relatedContentProjection}
@@ -228,6 +235,7 @@ export const automationBySlugQuery = groq`
   *[_type == "automation" && slug.current == $slug][0] {
     "slug": slug.current,
     title,
+    category,
     description,
     problem,
     trigger,
@@ -235,8 +243,10 @@ export const automationBySlugQuery = groq`
     architecture,
     input,
     output,
+    "integrations": coalesce(integrations, []),
     limitations,
     securityNotes,
+    learnings,
     "tools": tools[]->{ "slug": slug.current, name },
     ${relatedContentProjection}
   }
@@ -320,3 +330,24 @@ export const trainingBySlugQuery = groq`
 `;
 
 export const trainingSlugsQuery = groq`*[_type == "training" && registrationEnabled == true].slug.current`;
+
+// One round-trip for the AI Lab hub's sidebar, ⌘K search index and
+// previous/next links (src/app/ai-lab/layout.tsx). Same visibility filters
+// as the per-type list queries above.
+export const aiLabNavQuery = groq`{
+  "projects": *[_type == "project" && visibility != "private"] | order(publishedAt desc) {
+    "slug": slug.current, title, "summary": summary
+  },
+  "tools": *[${publishedToolFilter}] | order(name asc) {
+    "slug": slug.current, "title": name, "summary": description
+  },
+  "experiments": *[_type == "experiment"] | order(publishedAt desc) {
+    "slug": slug.current, title, "summary": objective
+  },
+  "prompts": *[_type == "prompt"] | order(category asc, title asc) {
+    "slug": slug.current, title, "summary": purpose
+  },
+  "automations": *[_type == "automation"] | order(title asc) {
+    "slug": slug.current, title, "summary": description
+  }
+}`;

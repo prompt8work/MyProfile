@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { client } from "../../sanity/lib/client";
 import { blogPostsQuery, videosQuery } from "../../sanity/lib/queries";
 import { personalInfo } from "../../../data";
@@ -6,6 +5,8 @@ import SectionHeading from "../ui/SectionHeading";
 import ArrowLink from "../ui/ArrowLink";
 import Tag from "../ui/Tag";
 import LinkedinIcon from "../icons/LinkedinIcon";
+import { StaggerGrid, StaggerItem } from "../motion/StaggerGrid";
+import MotionCard from "../motion/MotionCard";
 
 // PRD 04.2: LinkedIn is a distribution channel for this site's own blog
 // content, not a content source imported into it — so unlike Blog/YouTube,
@@ -27,10 +28,18 @@ export default async function ContentPreview() {
   const cards: Card[] = [
     posts[0]
       ? { type: "BLOG", title: posts[0].title, note: posts[0].excerpt, href: `/blog/${posts[0].slug}` }
-      : { type: "BLOG", title: "[ Article title to be published ]", note: "Excerpt preview will appear here once the first post goes live." },
+      : {
+          type: "BLOG",
+          title: "[ Article title to be published ]",
+          note: "Excerpt preview will appear here once the first post goes live.",
+        },
     videos[0]
       ? { type: "YOUTUBE", title: videos[0].title, note: videos[0].description ?? "", href: "/videos" }
-      : { type: "YOUTUBE", title: "[ Video title synced from channel ]", note: "Thumbnail, title and description sync automatically via the YouTube API." },
+      : {
+          type: "YOUTUBE",
+          title: "[ Video title synced from channel ]",
+          note: "Thumbnail, title and description sync automatically via the YouTube API.",
+        },
   ];
 
   return (
@@ -42,7 +51,7 @@ export default async function ContentPreview() {
           action={<ArrowLink href="/blog">View All</ArrowLink>}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-[22px]">
+        <StaggerGrid className="grid grid-cols-1 md:grid-cols-3 gap-[22px]">
           {cards.map((c) => {
             const body = (
               <>
@@ -53,39 +62,35 @@ export default async function ContentPreview() {
                 <p className="text-[13px] text-neutral-600 leading-relaxed">{c.note}</p>
               </>
             );
-            const className = "bg-white border border-neutral-200 rounded-2xl p-[22px] flex flex-col gap-3";
-            return c.href ? (
-              c.href.startsWith("/") ? (
-                <Link key={c.type} href={c.href} className={`${className} hover:border-plum-300 transition-colors`}>
+            return (
+              <StaggerItem key={c.type}>
+                <MotionCard
+                  href={c.href}
+                  external={!!c.href && !c.href.startsWith("/")}
+                  className="h-full bg-white border border-neutral-200 rounded-2xl p-[22px] flex flex-col gap-3"
+                >
                   {body}
-                </Link>
-              ) : (
-                <a key={c.type} href={c.href} target="_blank" rel="noopener noreferrer" className={`${className} hover:border-plum-300 transition-colors`}>
-                  {body}
-                </a>
-              )
-            ) : (
-              <div key={c.type} className={className}>
-                {body}
-              </div>
+                </MotionCard>
+              </StaggerItem>
             );
           })}
 
-          <a
-            href={`https://${personalInfo.linkedin}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-neutral-900 rounded-2xl p-[22px] flex flex-col gap-3 hover:bg-neutral-800 transition-colors"
-          >
-            <div className="self-start w-9 h-9 rounded-full bg-white flex items-center justify-center">
-              <LinkedinIcon className="w-4 h-4 text-neutral-900" />
-            </div>
-            <h4 className="text-[16px] font-semibold text-white leading-snug">Follow on LinkedIn</h4>
-            <p className="text-[13px] text-neutral-300 leading-relaxed">
-              New articles get shared there first — follow along, or check back here for the full write-up.
-            </p>
-          </a>
-        </div>
+          <StaggerItem>
+            <MotionCard
+              href={`https://${personalInfo.linkedin}`}
+              external
+              className="h-full bg-plum-50 border border-plum-100 rounded-2xl p-[22px] flex flex-col gap-3"
+            >
+              <div className="self-start w-9 h-9 rounded-full bg-white border border-plum-100 flex items-center justify-center">
+                <LinkedinIcon className="w-4 h-4 text-plum-600" />
+              </div>
+              <h4 className="text-[16px] font-semibold text-neutral-900 leading-snug">Follow on LinkedIn</h4>
+              <p className="text-[13px] text-neutral-600 leading-relaxed">
+                New articles get shared there first — follow along, or check back here for the full write-up.
+              </p>
+            </MotionCard>
+          </StaggerItem>
+        </StaggerGrid>
       </div>
     </section>
   );

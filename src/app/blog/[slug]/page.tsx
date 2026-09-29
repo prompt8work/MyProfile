@@ -2,9 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Nav from "../../../components/Nav";
+import PageTransition from "../../../components/PageTransition";
 import SiteFooter from "../../../components/SiteFooter";
 import ArrowLink from "../../../components/ui/ArrowLink";
 import Tag from "../../../components/ui/Tag";
+import PageHeader from "../../../components/ui/PageHeader";
+import Reveal from "../../../components/motion/Reveal";
+import Morph from "../../../components/motion/Morph";
+import { StaggerGrid, StaggerItem } from "../../../components/motion/StaggerGrid";
+import { morphName } from "../../../lib/motion";
 import RelatedContent from "../../../components/ai-lab/RelatedContent";
 import ReactionBar from "../../../components/blog/ReactionBar";
 import ShareActions from "../../../components/blog/ShareActions";
@@ -14,7 +20,7 @@ import { client } from "../../../sanity/lib/client";
 import { blogPostBySlugQuery, blogSlugsQuery } from "../../../sanity/lib/queries";
 import { getReactionCounts, type ReactionCounts } from "../../../supabase/blogReactionRepository";
 import { getPublishedComments, type PublishedComment } from "../../../supabase/commentRepository";
-import { getCanonicalUrl } from "../../../lib/site";
+import { buildBreadcrumbJsonLd, getCanonicalUrl } from "../../../lib/site";
 
 export const revalidate = 60;
 
@@ -44,11 +50,7 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const post: BlogPostDetail | null = await client.fetch(blogPostBySlugQuery, { slug });
   if (!post) return {};
@@ -64,11 +66,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post: BlogPostDetail | null = await client.fetch(blogPostBySlugQuery, { slug });
   if (!post) notFound();
@@ -92,81 +90,115 @@ export default async function BlogPostPage({
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <PageTransition key={slug} className="min-h-screen bg-neutral-50">
       <JsonLd data={articleJsonLd} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ])}
+      />
       <Nav />
-      <section className="w-full">
-        <div className="max-w-[800px] mx-auto px-5 sm:px-10 pt-16 sm:pt-20 pb-24 sm:pb-28 flex flex-col gap-10">
-          <div className="flex flex-col gap-5">
-            <ArrowLink href="/blog" size="sm" direction="back">
-              Blog
-            </ArrowLink>
-            <div className="flex items-center gap-2 flex-wrap">
-              {post.category && <Tag variant="plum">{post.category}</Tag>}
-              {post.readingTime && <span className="text-xs text-neutral-600">{post.readingTime}</span>}
-              <span className="text-xs text-neutral-600">
-                {new Date(post.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-              </span>
-            </div>
-            <h1 className="font-display text-3xl sm:text-[42px] font-semibold text-neutral-900 leading-tight">{post.title}</h1>
-            <p className="text-[16px] leading-relaxed text-neutral-600 max-w-[640px]">{post.excerpt}</p>
-            {post.author && <span className="text-sm text-neutral-600">By {post.author}</span>}
-          </div>
+      <main>
+        <section className="w-full">
+          <div className="max-w-[800px] mx-auto px-5 sm:px-10 pt-16 sm:pt-20 pb-24 sm:pb-28 flex flex-col gap-10">
+            <PageHeader
+              back={
+                <ArrowLink href="/blog" size="sm" direction="back">
+                  Blog
+                </ArrowLink>
+              }
+              eyebrow={
+                <span className="flex items-center gap-2 flex-wrap font-sans font-normal tracking-normal">
+                  {post.category && <Tag variant="plum">{post.category}</Tag>}
+                  {post.readingTime && <span className="text-xs text-neutral-600">{post.readingTime}</span>}
+                  <span className="text-xs text-neutral-600">
+                    {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </span>
+              }
+              title={post.title}
+              titleMorph={morphName.blogTitle(post.slug)}
+              description={post.excerpt}
+            >
+              {post.author && <span className="text-sm text-neutral-600">By {post.author}</span>}
+            </PageHeader>
 
-          {post.coverImage && (
-            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden">
-              <Image src={post.coverImage} alt="" fill sizes="(max-width: 800px) 100vw, 800px" className="object-cover" />
-            </div>
-          )}
-
-          <div className="flex flex-wrap items-center justify-between gap-4 py-5 border-y border-neutral-200">
-            <ReactionBar contentId={contentId} initialCounts={reactionCounts} />
-            <ShareActions url={canonicalUrl} title={post.title} />
-          </div>
-
-          <div className="text-[15.5px] leading-relaxed text-neutral-700 whitespace-pre-wrap">{post.body}</div>
-
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((t) => (
-                <Tag key={t}>{t}</Tag>
-              ))}
-            </div>
-          )}
-
-          <RelatedContent items={post.relatedContent} theme="light" />
-
-          <div className="pt-8 border-t border-neutral-200 flex flex-col gap-6">
-            <h2 className="font-display text-xl font-semibold text-neutral-900">
-              Comments{comments.length > 0 ? ` (${comments.length})` : ""}
-            </h2>
-
-            {comments.length > 0 && (
-              <div className="flex flex-col gap-5">
-                {comments.map((c) => (
-                  <div key={c.id} className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-neutral-900">{c.name}</span>
-                      <span className="text-xs text-neutral-600">
-                        {new Date(c.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                      </span>
-                    </div>
-                    <p className="text-sm text-neutral-700 leading-relaxed">{c.comment}</p>
-                  </div>
-                ))}
-              </div>
+            {post.coverImage && (
+              <Morph name={morphName.blogCover(post.slug)}>
+                <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden">
+                  <Image
+                    src={post.coverImage}
+                    alt=""
+                    fill
+                    sizes="(max-width: 800px) 100vw, 800px"
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              </Morph>
             )}
 
-            <div className="bg-white border border-neutral-200 rounded-2xl p-6">
-              <p className="text-xs text-neutral-600 mb-4">
-                Comments are reviewed before they appear publicly.
-              </p>
-              <CommentForm contentId={contentId} />
+            <Reveal className="flex flex-wrap items-center justify-between gap-4 py-5 border-y border-neutral-200">
+              <ReactionBar contentId={contentId} initialCounts={reactionCounts} />
+              <ShareActions url={canonicalUrl} title={post.title} />
+            </Reveal>
+
+            <Reveal className="text-[15.5px] leading-relaxed text-neutral-700 whitespace-pre-wrap">{post.body}</Reveal>
+
+            {post.tags && post.tags.length > 0 && (
+              <StaggerGrid className="flex flex-wrap gap-2">
+                {post.tags.map((t) => (
+                  <StaggerItem key={t}>
+                    <Tag>{t}</Tag>
+                  </StaggerItem>
+                ))}
+              </StaggerGrid>
+            )}
+
+            <RelatedContent items={post.relatedContent} />
+
+            <div className="pt-8 border-t border-neutral-200 flex flex-col gap-6">
+              <Reveal>
+                <h2 className="font-display text-xl font-semibold text-neutral-900">
+                  Comments{comments.length > 0 ? ` (${comments.length})` : ""}
+                </h2>
+              </Reveal>
+
+              {comments.length > 0 && (
+                <StaggerGrid className="flex flex-col gap-5">
+                  {comments.map((c) => (
+                    <StaggerItem key={c.id} className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-semibold text-neutral-900">{c.name}</span>
+                        <span className="text-xs text-neutral-600">
+                          {new Date(c.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      <p className="text-sm text-neutral-700 leading-relaxed">{c.comment}</p>
+                    </StaggerItem>
+                  ))}
+                </StaggerGrid>
+              )}
+
+              <Reveal className="bg-white border border-neutral-200 rounded-2xl p-6">
+                <p className="text-xs text-neutral-600 mb-4">Comments are reviewed before they appear publicly.</p>
+                <CommentForm contentId={contentId} />
+              </Reveal>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
       <SiteFooter />
-    </div>
+    </PageTransition>
   );
 }

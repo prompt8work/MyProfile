@@ -1,5 +1,8 @@
+// Formerly the About page's "AI Engineering Focus". The About page was
+// removed (its focus areas are covered by AI Lab → Engineering); kept only
+// because scripts/migrate-to-sanity.ts still imports it.
 export const passions = [
-  "Emerging Technologies - Passionate about AI/ML and staying current with the latest industry trends",
-  "Technical Business Solutions - Love bridging technical depth with business value for clients",
-  "Continuous Learning - Dedicated to expanding knowledge in sales and emerging tech stacks"
+  "Generative AI - Building LLM-powered applications with prompt engineering, structured outputs and multi-model orchestration",
+  "RAG & Knowledge Systems - Designing retrieval pipelines with embeddings, hybrid search and grounded answer generation",
+  "AI-Assisted Development - Using AI coding tools and structured workflows (BMAD, Claude Code) to ship production software faster"
 ];

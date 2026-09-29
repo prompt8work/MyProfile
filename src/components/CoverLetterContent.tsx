@@ -2,6 +2,7 @@
 
 import { Download, Mail, MapPin } from "lucide-react";
 import PageTransition from "./PageTransition";
+import IntroFade from "./motion/IntroFade";
 import LinkedinIcon from "./icons/LinkedinIcon";
 import { personalInfo, coverLetter } from "../../data";
 
@@ -34,26 +35,27 @@ export default function CoverLetterContent() {
         <div className="fixed top-4 right-4 z-50 no-print">
           <button
             onClick={handleExportPDF}
-            className="flex items-center gap-2 bg-plum-600 hover:bg-plum-700 text-white px-6 py-3 rounded-lg shadow-lg transition-colors font-semibold"
+            className="motion-btn flex items-center gap-2 bg-plum-600 hover:bg-plum-700 text-white px-6 py-3 rounded-lg shadow-lg font-semibold"
           >
             <Download className="w-5 h-5" />
             Export to PDF
           </button>
         </div>
 
-        <div className="max-w-5xl mx-auto bg-white shadow-sm border border-neutral-200 rounded-2xl overflow-hidden print:shadow-none print:rounded-none print:border-none">
-          <div data-print-header className="bg-neutral-900 text-white p-4 md:p-8 print:p-4 print:py-2">
+        <IntroFade>
+          <div className="max-w-5xl mx-auto bg-white shadow-sm border border-neutral-200 rounded-2xl overflow-hidden print:shadow-none print:rounded-none print:border-none">
+          <div data-print-header className="bg-neutral-100 text-neutral-900 border-b border-neutral-200 p-4 md:p-8 print:p-4 print:py-2">
             <div className="text-center md:text-left print:text-left">
               <h1 className="font-display text-2xl md:text-3xl font-semibold mb-1 print:text-xl print:mb-0.5">
                 {personalInfo.name}
               </h1>
-              <p className="text-neutral-300 text-xs md:text-sm mb-4 print:text-xs print:mb-2">
+              <p className="text-neutral-600 text-xs md:text-sm mb-4 print:text-xs print:mb-2">
                 {personalInfo.title}
               </p>
               <div className="flex flex-col md:flex-row items-center md:items-start gap-1 md:gap-4 text-xs print:flex-row print:gap-3 print:text-xs">
                 <div className="flex items-center gap-1">
                   <Mail className="w-3 h-3 md:hidden print:hidden" />
-                  <a href={`mailto:${personalInfo.email}`} className="text-white hover:text-cyan-400 transition-colors">
+                  <a href={`mailto:${personalInfo.email}`} className="text-neutral-800 hover:text-plum-600 transition-colors">
                     {personalInfo.email}
                   </a>
                 </div>
@@ -63,7 +65,7 @@ export default function CoverLetterContent() {
                     href={`https://${personalInfo.linkedin}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-white hover:text-cyan-400 transition-colors"
+                    className="text-neutral-800 hover:text-plum-600 transition-colors"
                   >
                     {personalInfo.linkedin}
                   </a>
@@ -147,6 +149,7 @@ export default function CoverLetterContent() {
             </div>
           </div>
         </div>
+        </IntroFade>
       </div>
     </PageTransition>
   );
