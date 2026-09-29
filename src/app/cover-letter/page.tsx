@@ -9,7 +9,7 @@ import { buildMetadata } from "../../lib/site";
 // CoverLetterContent, which stays a Client Component.
 export const metadata: Metadata = buildMetadata({
   title: "Cover Letter — PromptAtWork",
-  description: "Cover letter of Niharika Dhande, AI Solution Engineer.",
+  description: "Cover letter of Niharika Dhande, Full-Stack AI Engineer.",
   path: "/cover-letter",
 });
 

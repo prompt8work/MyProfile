@@ -97,6 +97,348 @@
   }
 }
 
+/* ==========================================================================
+   Motion system — CSS half.
+   Every value below is a var(--motion-*) set on <html> from src/lib/motion.ts
+   (motionCssVars). Nothing here hard-codes a duration, easing or distance.
+   Only transform and opacity animate (plus clip-path for the hero curtain).
+   The prefers-reduced-motion block at the end is the plain-CSS form of
+   Tailwind's `motion-reduce:` variant, applied to every effect in one place.
+   ========================================================================== */
+
+@keyframes motion-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-rise));
+  }
+}
+
+@keyframes motion-slide-x {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--motion-slide-dir, 1) * var(--motion-slide)));
+  }
+}
+
+@keyframes motion-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes motion-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes motion-curtain {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes motion-blob-drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(var(--motion-blob-drift), calc(-1 * var(--motion-blob-drift))) scale(var(--motion-blob-scale));
+  }
+  to {
+    transform: translate(calc(-1 * var(--motion-blob-drift)), var(--motion-blob-drift)) scale(1);
+  }
+}
+
+@layer components {
+  /* --- Entrances (first paint, no JS) ----------------------------------- */
+  .motion-intro {
+    animation-name: motion-fade-up;
+    animation-duration: var(--motion-reveal);
+    animation-timing-function: var(--motion-ease);
+    /* backwards, not both: once finished it leaves no transform behind, so
+       framer-motion (layout, hidden/visible) can take over the element. */
+    animation-fill-mode: backwards;
+    animation-delay: var(--motion-delay, calc(var(--motion-i, 0) * var(--motion-stagger)));
+  }
+  .motion-intro[data-reveal="slideLeft"] {
+    animation-name: motion-slide-x;
+    --motion-slide-dir: -1;
+  }
+  .motion-intro[data-reveal="slideRight"],
+  .motion-intro[data-reveal="timelineLeft"],
+  .motion-intro[data-reveal="timelineRight"] {
+    animation-name: motion-slide-x;
+    --motion-slide-dir: 1;
+  }
+  @media (min-width: 1024px) {
+    .motion-intro[data-reveal="timelineLeft"] {
+      --motion-slide-dir: -1;
+    }
+  }
+
+  .motion-word {
+    display: inline-block;
+    animation: motion-fade-up var(--motion-reveal) var(--motion-ease) backwards;
+    animation-delay: calc(var(--motion-i, 0) * var(--motion-word-stagger));
+  }
+
+  /* --- Card ------------------------------------------------------------- */
+  .motion-card {
+    position: relative;
+    transition: transform var(--motion-hover) var(--motion-ease);
+  }
+  /* Glow + shadow live on a layer that only fades, so the hover never
+     animates box-shadow or border-color directly. */
+  .motion-card::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow:
+      0 0 0 1px var(--color-plum-300),
+      0 0 20px -4px color-mix(in srgb, var(--color-plum-400) 45%, transparent),
+      var(--shadow-lg);
+    transition: opacity var(--motion-hover) var(--motion-ease);
+  }
+  .motion-card[data-tone="dark"]::after {
+    box-shadow:
+      0 0 0 1px var(--color-plum-400),
+      0 0 24px -4px color-mix(in srgb, var(--color-plum-400) 60%, transparent),
+      0 16px 40px rgba(0, 0, 0, 0.35);
+  }
+  .motion-card:hover {
+    transform: translateY(var(--motion-lift-card));
+  }
+  .motion-card:hover::after {
+    opacity: 1;
+  }
+  .motion-card:active {
+    transform: translateY(var(--motion-lift-card)) scale(var(--motion-press-card-scale));
+    transition-duration: var(--motion-press);
+  }
+  .motion-card-media {
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+  }
+  .motion-card-media-inner {
+    transition: transform var(--motion-media-zoom-duration) var(--motion-ease);
+  }
+  .motion-card:hover .motion-card-media-inner {
+    transform: scale(var(--motion-media-zoom));
+  }
+
+  /* --- Buttons & arrow links ------------------------------------------- */
+  .motion-btn {
+    position: relative;
+    transition: transform var(--motion-hover) var(--motion-ease);
+  }
+  .motion-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: var(--shadow-md);
+    transition: opacity var(--motion-hover) var(--motion-ease);
+  }
+  .motion-btn:hover:not(:disabled) {
+    transform: translateY(var(--motion-lift-button));
+  }
+  .motion-btn:hover:not(:disabled)::after {
+    opacity: 1;
+  }
+  .motion-btn:active:not(:disabled) {
+    transform: translateY(var(--motion-lift-button)) scale(var(--motion-press-scale));
+    transition-duration: var(--motion-press);
+  }
+
+  .motion-arrow-icon {
+    transition: transform var(--motion-hover) var(--motion-ease);
+  }
+  .motion-arrow:hover .motion-arrow-icon,
+  .motion-card:hover .motion-arrow-icon {
+    transform: translateX(var(--motion-arrow-nudge));
+  }
+  .motion-arrow[data-direction="back"]:hover .motion-arrow-icon {
+    transform: translateX(calc(-1 * var(--motion-arrow-nudge)));
+  }
+
+  /* --- Tags / chips ------------------------------------------------------ */
+  .motion-chip {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .motion-chip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--color-plum-100);
+    transform: translateY(101%);
+    transition: transform var(--motion-hover) var(--motion-ease);
+  }
+  .motion-chip:hover::before {
+    transform: translateY(0);
+  }
+  .motion-chip:hover {
+    color: var(--color-plum-700);
+  }
+  .motion-chip[data-active="true"]::before {
+    display: none;
+  }
+  .motion-chip[data-active="true"],
+  .motion-chip[data-active="true"]:hover {
+    color: var(--color-neutral-0);
+  }
+
+  /* --- Form fields (floating label) ------------------------------------ */
+  .field {
+    position: relative;
+  }
+  .field-control {
+    width: 100%;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 1.4rem 0.875rem 0.55rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-neutral-300);
+    background: var(--color-neutral-50);
+    color: var(--color-neutral-900);
+    outline: none;
+  }
+  textarea.field-control {
+    resize: vertical;
+  }
+  .field-control:focus {
+    border-color: var(--color-plum-400);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-plum-300) 35%, transparent);
+  }
+  .field-control:disabled {
+    opacity: 0.6;
+  }
+  .field[data-invalid] .field-control {
+    border-color: var(--color-error);
+  }
+  .field-label {
+    position: absolute;
+    left: 0.875rem;
+    top: 0.95rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-neutral-500);
+    pointer-events: none;
+    transform-origin: left top;
+    transition: transform var(--motion-hover) var(--motion-ease);
+  }
+  .field-control:focus + .field-label,
+  .field-control:not(:placeholder-shown) + .field-label,
+  .field-select + .field-label {
+    transform: translateY(var(--motion-label-float)) scale(var(--motion-label-scale));
+  }
+  .field-control:focus + .field-label {
+    color: var(--color-plum-600);
+  }
+  /* --- Home hero ---------------------------------------------------------- */
+  .motion-curtain {
+    animation: motion-curtain var(--motion-curtain) var(--motion-ease) backwards;
+  }
+  .motion-blob {
+    animation: motion-blob-drift var(--motion-blob-loop) var(--motion-ease) infinite alternate;
+  }
+
+}
+
+/* --- Page transitions (React <ViewTransition>) ------------------------------ */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--motion-page);
+  animation-timing-function: var(--motion-ease);
+}
+::view-transition-old(.page-exit) {
+  animation: motion-fade-out var(--motion-page) var(--motion-ease) both;
+}
+::view-transition-new(.page-enter) {
+  animation: motion-fade-in var(--motion-page) var(--motion-ease) both;
+}
+/* Nav and footer never move between routes. */
+::view-transition-group(site-header),
+::view-transition-group(site-footer) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header),
+::view-transition-old(site-footer) {
+  display: none;
+}
+::view-transition-new(site-header),
+::view-transition-new(site-footer) {
+  animation: none;
+}
+/* Card → detail header morph. */
+::view-transition-group(.morph) {
+  animation-duration: var(--motion-morph);
+  animation-timing-function: var(--motion-ease);
+  z-index: 50;
+}
+::view-transition-old(.morph),
+::view-transition-new(.morph) {
+  animation-duration: var(--motion-morph);
+  animation-timing-function: var(--motion-ease);
+  height: 100%;
+}
+
+/* --- Reduced motion: everything appears instantly, nothing loops. -------- */
+@media (prefers-reduced-motion: reduce) {
+  .motion-intro,
+  .motion-word,
+  .motion-curtain,
+  .motion-blob,
+  .motion-card,
+  .motion-card::after,
+  .motion-card-media-inner,
+  .motion-btn,
+  .motion-btn::after,
+  .motion-arrow-icon,
+  .motion-chip::before,
+  .field-label {
+    transition-duration: 0s !important;
+  }
+  .motion-card:hover,
+  .motion-card:active,
+  .motion-btn:hover:not(:disabled),
+  .motion-btn:active:not(:disabled),
+  .motion-card:hover .motion-card-media-inner,
+  .motion-arrow:hover .motion-arrow-icon,
+  .motion-card:hover .motion-arrow-icon,
+  .motion-arrow[data-direction="back"]:hover .motion-arrow-icon {
+    transform: none !important;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+@media print {
+  .motion-intro,
+  .motion-word {
+    animation: none !important;
+  }
+}
+
 /* Print styles for PDF export (Resume, Cover Letter) — ported unchanged from the Vite app's index.css */
 @media print {
   @page {

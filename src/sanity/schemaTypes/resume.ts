@@ -33,7 +33,7 @@ export default defineType({
   ],
   fields: [
     defineField({ name: "name", type: "string", group: "header", validation: (r) => r.required() }),
-    defineField({ name: "title", type: "string", group: "header", description: "e.g. AI Solution Engineer" }),
+    defineField({ name: "title", type: "string", group: "header", description: "e.g. Full-Stack AI Engineer" }),
     defineField({ name: "email", type: "string", group: "header" }),
     defineField({ name: "location", type: "string", group: "header" }),
     defineField({ name: "linkedin", type: "string", group: "header", description: "Without https://, e.g. linkedin.com/in/…" }),

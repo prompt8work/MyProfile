@@ -11,7 +11,9 @@ const variants: Record<Variant, string> = {
 
 export default function Tag({ children, variant = "neutral" }: { children: ReactNode; variant?: Variant }) {
   return (
-    <span className={`font-mono text-[11px] font-semibold px-2.5 py-1 rounded-full inline-block ${variants[variant]}`}>
+    <span
+      className={`motion-chip font-mono text-[11px] font-semibold px-2.5 py-1 rounded-full inline-block ${variants[variant]}`}
+    >
       {children}
     </span>
   );

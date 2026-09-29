@@ -41,7 +41,7 @@ const resume = {
   _type: "resume",
 
   name: "Niharika Dhande",
-  title: "AI Solution Engineer",
+  title: "Full-Stack AI Engineer",
   email: "niharikadhande1@gmail.com",
   phone: "+91 95842 54666",
   location: "Indore, Madhya Pradesh, India",

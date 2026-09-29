@@ -11,6 +11,20 @@ export function getCanonicalUrl(path: string): string {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+export type OgVariant = "blog" | "project" | "tool" | "training";
+
+// Per-content-type OG accent (Docs/design/asset-prompt-library.md §10.2):
+// Blog=plum/ivory (default), Project=cyan/dark, Tool & AI Lab=cyan/dark,
+// Training=gold/ivory. Inferred from the path so existing buildMetadata()
+// call sites don't need to pass it explicitly; an explicit `ogVariant`
+// still overrides when a page wants something other than its default.
+function inferOgVariant(path: string): OgVariant {
+  if (path.startsWith("/ai-lab/work")) return "project";
+  if (path.startsWith("/ai-lab")) return "tool";
+  if (path.startsWith("/training")) return "training";
+  return "blog";
+}
+
 // PRD §78 SEO: every public page should generate canonical URL + OpenGraph
 // metadata, not just a title/description. One helper so every route gets
 // the same shape rather than 20 near-identical generateMetadata bodies.
@@ -19,18 +33,40 @@ export function buildMetadata({
   description,
   path,
   type = "website",
+  ogVariant,
 }: {
   title: string;
   description: string;
   path: string;
   type?: "website" | "article";
+  ogVariant?: OgVariant;
 }) {
   const canonicalUrl = getCanonicalUrl(path);
+  const variant = ogVariant ?? inferOgVariant(path);
+  const ogImageUrl = getCanonicalUrl(`/og?title=${encodeURIComponent(title)}&variant=${variant}`);
   return {
     title,
     description,
     alternates: { canonical: canonicalUrl },
-    openGraph: { title, description, url: canonicalUrl, type },
-    twitter: { card: "summary_large_image" as const, title, description },
+    openGraph: { title, description, url: canonicalUrl, type, images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }] },
+    twitter: { card: "summary_large_image" as const, title, description, images: [ogImageUrl] },
+  };
+}
+
+// Master content doc §31 lists BreadcrumbList among the structured-data
+// types the site should support; Phase 6 built the rest (Person, Article,
+// Course, ItemList/VideoObject, TechArticle) but not this one. One helper
+// so every page passes a plain [{ name, path }] list instead of
+// hand-building the schema.org shape each time.
+export function buildBreadcrumbJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: getCanonicalUrl(item.path),
+    })),
   };
 }
