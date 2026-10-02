@@ -20,7 +20,8 @@ function Tree({ onNavigate }: { onNavigate?: () => void }) {
   // Start + the group you're in are open; the rest collapse so the tree
   // stays scannable. Manual toggles are remembered for the session.
   const [open, setOpen] = useState<Record<string, boolean>>({});
-  const isOpen = (g: DocsGroup, i: number) => open[g.href] ?? (i === 0 || (g.href !== "/ai-lab" && groupContains(pathname, g)));
+  const isOpen = (g: DocsGroup, i: number) =>
+    open[g.href] ?? (i === 0 || (g.href !== "/ai-lab" && groupContains(pathname, g)));
 
   return (
     <nav aria-label="AI Lab" className="flex flex-col gap-5">
@@ -130,7 +131,15 @@ export default function DocsSidebar() {
             aria-expanded={drawer}
             className="flex items-center gap-2 text-sm font-medium text-neutral-800 min-w-0"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <path d="M4 6h16M4 12h10M4 18h16" />
             </svg>
             <span className="font-mono text-[11px] tracking-[0.12em] text-neutral-500 shrink-0">AI LAB</span>
@@ -159,7 +168,15 @@ export default function DocsSidebar() {
                 aria-label="Close"
                 className="w-9 h-9 flex items-center justify-center rounded-lg border border-neutral-300 text-neutral-700"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
                   <path d="M6 6l12 12M18 6L6 18" />
                 </svg>
               </button>

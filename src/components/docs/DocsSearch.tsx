@@ -6,7 +6,15 @@ import { useAiLabNav } from "./AiLabNavContext";
 
 function SearchIcon() {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+    >
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" />
     </svg>
@@ -30,7 +38,11 @@ export default function DocsSearch({ compact = false }: { compact?: boolean }) {
   const index = useMemo(
     () =>
       groups.flatMap((g) =>
-        g.items.map((i) => ({ ...i, group: g.title, haystack: `${i.title} ${i.summary ?? ""} ${g.title}`.toLowerCase() })),
+        g.items.map((i) => ({
+          ...i,
+          group: g.title,
+          haystack: `${i.title} ${i.summary ?? ""} ${g.title}`.toLowerCase(),
+        })),
       ),
     [groups],
   );
@@ -88,8 +100,18 @@ export default function DocsSearch({ compact = false }: { compact?: boolean }) {
       )}
 
       {open && (
-        <div className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[12vh]" role="dialog" aria-modal="true" aria-label="Search AI Lab">
-          <button type="button" aria-label="Close search" className="absolute inset-0 bg-neutral-900/30" onClick={() => setOpen(false)} />
+        <div
+          className="fixed inset-0 z-[60] flex items-start justify-center px-4 pt-[12vh]"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search AI Lab"
+        >
+          <button
+            type="button"
+            aria-label="Close search"
+            className="absolute inset-0 bg-neutral-900/30"
+            onClick={() => setOpen(false)}
+          />
           <div className="relative w-full max-w-[560px] rounded-xl border border-neutral-200 bg-white shadow-lg overflow-hidden">
             <div className="flex items-center gap-2.5 px-4 border-b border-neutral-200 text-neutral-500">
               <SearchIcon />
@@ -120,7 +142,9 @@ export default function DocsSearch({ compact = false }: { compact?: boolean }) {
                 aria-activedescendant={results[cursor] ? `docs-search-${cursor}` : undefined}
                 className="flex-1 py-3.5 text-[15px] text-neutral-900 placeholder:text-neutral-400 outline-none bg-transparent"
               />
-              <kbd className="font-mono text-[10.5px] text-neutral-400 border border-neutral-200 rounded px-1.5 py-0.5">esc</kbd>
+              <kbd className="font-mono text-[10.5px] text-neutral-400 border border-neutral-200 rounded px-1.5 py-0.5">
+                esc
+              </kbd>
             </div>
             <ul id="docs-search-results" role="listbox" className="max-h-[50vh] overflow-y-auto p-2">
               {results.length === 0 && <li className="px-3 py-6 text-center text-sm text-neutral-500">No matches.</li>}
@@ -132,9 +156,13 @@ export default function DocsSearch({ compact = false }: { compact?: boolean }) {
                     onClick={() => go(r.href)}
                     className={`w-full text-left rounded-lg px-3 py-2.5 ${i === cursor ? "bg-plum-50" : ""}`}
                   >
-                    <span className="block font-mono text-[10.5px] tracking-[0.1em] uppercase text-cyan-700">{r.group}</span>
+                    <span className="block font-mono text-[10.5px] tracking-[0.1em] uppercase text-cyan-700">
+                      {r.group}
+                    </span>
                     <span className="block text-sm font-medium text-neutral-900">{r.title}</span>
-                    {r.summary && <span className="block text-xs text-neutral-500 line-clamp-1 mt-0.5">{r.summary}</span>}
+                    {r.summary && (
+                      <span className="block text-xs text-neutral-500 line-clamp-1 mt-0.5">{r.summary}</span>
+                    )}
                   </button>
                 </li>
               ))}

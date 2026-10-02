@@ -10,6 +10,8 @@ import Reveal from "../../../../components/motion/Reveal";
 import CountUp from "../../../../components/motion/CountUp";
 import RelatedContent, { type RelatedItem } from "../../../../components/ai-lab/RelatedContent";
 import JsonLd from "../../../../components/JsonLd";
+import Diagrams from "../../../../components/diagrams/DiagramFigure";
+import type { Diagram } from "../../../../components/diagrams/types";
 import { buildBreadcrumbJsonLd, buildMetadata } from "../../../../lib/site";
 
 type ProjectDetail = {
@@ -33,6 +35,7 @@ type ProjectDetail = {
   results: string;
   learnings: string;
   relatedContent?: RelatedItem[];
+  diagrams?: Diagram[];
 };
 
 // Interim revalidation strategy until the Sanity webhook is wired up.
@@ -89,13 +92,21 @@ export default async function ProjectDetailPage({ params }: PageProps<"/ai-lab/w
         </DocsHeader>
 
         <div className="flex flex-col gap-10">
+          <Diagrams items={project.diagrams} at="top" />
           <ContentSection heading="Overview" body={project.overview} />
+          <Diagrams items={project.diagrams} at="overview" />
           <ContentSection heading="Problem" body={project.problem} />
+          <Diagrams items={project.diagrams} at="problem" />
           <ContentSection heading="Context" body={project.context} />
+          <Diagrams items={project.diagrams} at="context" />
           <ContentSection heading="Solution" body={project.solution} />
+          <Diagrams items={project.diagrams} at="solution" />
           <ContentSection heading="My Role" body={project.role} />
+          <Diagrams items={project.diagrams} at="role" />
           <ContentSection heading="Architecture" body={project.architecture} />
+          <Diagrams items={project.diagrams} at="architecture" />
           <ContentSection heading="Workflow" body={project.workflow} />
+          <Diagrams items={project.diagrams} at="workflow" />
 
           {project.aiModels && project.aiModels.length > 0 && (
             <Reveal className="flex flex-col gap-3">
@@ -109,8 +120,11 @@ export default async function ProjectDetailPage({ params }: PageProps<"/ai-lab/w
           )}
 
           <ContentSection heading="Challenges" body={project.challenges} />
+          <Diagrams items={project.diagrams} at="challenges" />
           <ContentSection heading="Results" body={project.results} />
+          <Diagrams items={project.diagrams} at="results" />
           <ContentSection heading="Learnings" body={project.learnings} />
+          <Diagrams items={project.diagrams} at="learnings" />
 
           {project.confidentialityNote && (
             <Reveal className="bg-neutral-100 border border-neutral-200 rounded-xl p-5">

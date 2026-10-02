@@ -5,14 +5,28 @@ import SiteFooter from "../../components/SiteFooter";
 import SectionHeading from "../../components/ui/SectionHeading";
 import { StaggerGrid, StaggerItem } from "../../components/motion/StaggerGrid";
 import CourseCard from "../../components/training/CourseCard";
+import AiToolsSection from "../../components/training/AiToolsSection";
 import { client } from "../../sanity/lib/client";
 import { trainingsQuery } from "../../sanity/lib/queries";
 import { buildMetadata } from "../../lib/site";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Training — PromptAtWork",
-  description: "Cohort-based training in prompt engineering and AI-assisted development.",
+  title: "Prompt Engineering & Generative AI Training in Indore (Online) — PromptAtWork",
+  description:
+    "Cohort-based, hands-on prompt engineering and Generative AI training by Niharika Dhande, an AI trainer based in Indore, India. Courses, workshops and AI tools training (ChatGPT, Claude, GitHub Copilot, Cursor, Perplexity, NotebookLM) taught online.",
   path: "/training",
+  keywords: [
+    "prompt engineering training in Indore",
+    "generative AI trainer in Indore",
+    "prompt engineering course online",
+    "generative AI course India",
+    "AI workshops Indore",
+    "Niharika Dhande training",
+    "AI tools training for teams",
+    "ChatGPT and Claude training",
+    "GitHub Copilot training",
+    "Cursor AI training",
+  ],
 });
 
 export const revalidate = 60;
@@ -39,7 +53,7 @@ export default async function TrainingPage() {
               level="page"
               eyebrow="TRAINING"
               title="Courses & Workshops"
-              description="Cohort-based training, taught in the open — the same practices documented in the AI Lab, taught directly."
+              description="Hands-on, cohort-based prompt engineering and Generative AI training by Niharika Dhande, an AI trainer based in Indore, India — taught online, using the same practices documented in the AI Lab."
               align="start"
             />
 
@@ -58,6 +72,7 @@ export default async function TrainingPage() {
             )}
           </div>
         </section>
+        <AiToolsSection />
       </main>
       <SiteFooter />
     </PageTransition>

@@ -73,7 +73,9 @@ export default function SiteFooter() {
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-6">
           <div className="flex flex-wrap items-center gap-4">
-            <span className="font-mono text-[11.5px] text-neutral-500">© 2026 Niharika Dhande. All rights reserved.</span>
+            <span className="font-mono text-[11.5px] text-neutral-500">
+              © 2026 Niharika Dhande · Prompt Engineer &amp; Generative AI Trainer · Indore, India
+            </span>
             <Link href="/privacy" className="font-mono text-[11.5px] text-neutral-500 hover:text-plum-600 transition-colors">
               Privacy Policy
             </Link>

@@ -11,9 +11,9 @@ import { process } from "../../../data/homeContent";
 import { buildMetadata } from "../../lib/site";
 
 export const metadata: Metadata = buildMetadata({
-  title: "AI Lab — PromptAtWork",
+  title: "AI Lab — Prompt Engineering & Generative AI Projects by Niharika Dhande | PromptAtWork",
   description:
-    "Every project, case study, engineering capability, AI tool review, experiment, prompt and automation — in one place.",
+    "Prompt engineering and Generative AI work by Niharika Dhande: projects, case studies, RAG and LLM engineering, AI tool reviews, experiments, prompts and automations — in one place.",
   path: "/ai-lab",
 });
 

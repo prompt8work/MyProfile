@@ -1,4 +1,6 @@
 import { defineField, defineType } from "sanity";
+import { diagramsField } from "./processDiagram";
+import { diagramPlacements } from "./diagramPlacements";
 
 // PRD §65 fields exactly. `body` is plain text, not portable text — every
 // other long-form field in this codebase (project overview/solution/etc.)
@@ -26,6 +28,7 @@ export default defineType({
     defineField({ name: "publishedAt", type: "datetime", validation: (r) => r.required() }),
     defineField({ name: "seoTitle", type: "string" }),
     defineField({ name: "seoDescription", type: "text", rows: 2 }),
+    diagramsField(diagramPlacements.blog, { inlineNote: true }),
     defineField({
       name: "relatedContent",
       type: "array",

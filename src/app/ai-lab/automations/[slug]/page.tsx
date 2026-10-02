@@ -6,9 +6,10 @@ import DocsHeader, { DocsTag } from "../../../../components/docs/DocsHeader";
 import ArrowLink from "../../../../components/ui/ArrowLink";
 import ContentSection, { BlockLabel } from "../../../../components/ui/ContentSection";
 import Reveal from "../../../../components/motion/Reveal";
-import { Timeline, TimelineItem } from "../../../../components/motion/Timeline";
 import RelatedContent, { type RelatedItem } from "../../../../components/ai-lab/RelatedContent";
 import JsonLd from "../../../../components/JsonLd";
+import Diagrams, { DiagramFigure } from "../../../../components/diagrams/DiagramFigure";
+import type { Diagram } from "../../../../components/diagrams/types";
 import { client } from "../../../../sanity/lib/client";
 import { automationBySlugQuery, automationSlugsQuery } from "../../../../sanity/lib/queries";
 import { buildBreadcrumbJsonLd, buildMetadata } from "../../../../lib/site";
@@ -32,6 +33,7 @@ type AutomationDetail = {
   learnings?: string;
   tools?: { slug: string; name: string }[];
   relatedContent?: RelatedItem[];
+  diagrams?: Diagram[];
 };
 
 export async function generateStaticParams() {
@@ -84,25 +86,39 @@ export default async function AutomationDetailPage({ params }: { params: Promise
         </DocsHeader>
 
         <div className="flex flex-col gap-10">
-          {automation.steps && automation.steps.length > 0 && (
-            <div className="flex flex-col gap-5">
+          <Diagrams items={automation.diagrams} at="top" />
+          {/* The automation's own steps are always drawn as a flow, so every
+              automation has its core process diagram even before authored
+              diagrams are added. */}
+          {automation.steps && automation.steps.length > 1 && (
+            <div className="flex flex-col gap-4">
               <Reveal>
                 <BlockLabel>Workflow</BlockLabel>
               </Reveal>
-              <Timeline markers="number">
-                {automation.steps.map((step, i) => (
-                  <TimelineItem key={`${step.label}-${i}`} title={step.label}>
-                    {step.description && <p className="text-sm text-neutral-600 leading-relaxed">{step.description}</p>}
-                  </TimelineItem>
-                ))}
-              </Timeline>
+              <DiagramFigure
+                d={{
+                  key: "workflow-steps",
+                  title: automation.trigger ? `From “${automation.trigger}” to result` : "Workflow",
+                  kind: "flow",
+                  steps: automation.steps.map((step, i, all) => ({
+                    label: step.label,
+                    detail: step.description,
+                    kind: i === 0 && automation.trigger ? "trigger" : i === all.length - 1 ? "output" : "action",
+                  })),
+                }}
+              />
             </div>
           )}
+          <Diagrams items={automation.diagrams} at="workflow" />
 
           <ContentSection heading="Problem" body={automation.problem} />
+          <Diagrams items={automation.diagrams} at="problem" />
           <ContentSection heading="Architecture" body={automation.architecture} />
+          <Diagrams items={automation.diagrams} at="architecture" />
           <ContentSection heading="Input" body={automation.input} />
+          <Diagrams items={automation.diagrams} at="input" />
           <ContentSection heading="Output" body={automation.output} />
+          <Diagrams items={automation.diagrams} at="output" />
 
           {automation.integrations && automation.integrations.length > 0 && (
             <Reveal className="flex flex-col gap-3">
@@ -114,6 +130,7 @@ export default async function AutomationDetailPage({ params }: { params: Promise
               </div>
             </Reveal>
           )}
+          <Diagrams items={automation.diagrams} at="integrations" />
 
           <ContentSection heading="Limitations" body={automation.limitations} />
           <ContentSection heading="Security Notes" body={automation.securityNotes} />

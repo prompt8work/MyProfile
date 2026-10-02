@@ -9,6 +9,8 @@ import ContentSection, { BlockLabel, ListSection } from "../../../../components/
 import Reveal from "../../../../components/motion/Reveal";
 import RelatedContent, { type RelatedItem } from "../../../../components/ai-lab/RelatedContent";
 import JsonLd from "../../../../components/JsonLd";
+import Diagrams from "../../../../components/diagrams/DiagramFigure";
+import type { Diagram } from "../../../../components/diagrams/types";
 import { client } from "../../../../sanity/lib/client";
 import { promptBySlugQuery, promptSlugsQuery } from "../../../../sanity/lib/queries";
 import { buildBreadcrumbJsonLd, buildMetadata } from "../../../../lib/site";
@@ -30,6 +32,7 @@ type PromptDetail = {
   tips?: string;
   tool?: { slug: string; name: string };
   relatedContent?: RelatedItem[];
+  diagrams?: Diagram[];
 };
 
 export async function generateStaticParams() {
@@ -78,6 +81,7 @@ export default async function PromptDetailPage({ params }: { params: Promise<{ s
         </DocsHeader>
 
         <div className="flex flex-col gap-10">
+          <Diagrams items={prompt.diagrams} at="top" />
           <Reveal className="flex flex-col gap-3">
             <BlockLabel>Prompt</BlockLabel>
             <pre className="whitespace-pre-wrap font-mono text-[13.5px] leading-relaxed text-neutral-800 bg-white border border-neutral-200 rounded-xl p-5">
@@ -85,6 +89,7 @@ export default async function PromptDetailPage({ params }: { params: Promise<{ s
             </pre>
             <CopyPromptButton text={prompt.prompt} />
           </Reveal>
+          <Diagrams items={prompt.diagrams} at="prompt" />
 
           {prompt.variables && prompt.variables.length > 0 && (
             <Reveal className="flex flex-col gap-3">
@@ -98,9 +103,13 @@ export default async function PromptDetailPage({ params }: { params: Promise<{ s
           )}
 
           <ContentSection heading="Example Input" body={prompt.exampleInput} />
+          <Diagrams items={prompt.diagrams} at="exampleInput" />
           <ContentSection heading="Example Output" body={prompt.exampleOutput} />
+          <Diagrams items={prompt.diagrams} at="exampleOutput" />
           <ContentSection heading="Expected Behavior" body={prompt.expectedBehavior} />
+          <Diagrams items={prompt.diagrams} at="expectedBehavior" />
           <ListSection heading="Failure Modes" items={prompt.failureModes} marker="−" />
+          <Diagrams items={prompt.diagrams} at="failureModes" />
           <ContentSection heading="Tips" body={prompt.tips} />
 
           <RelatedContent items={prompt.relatedContent} />

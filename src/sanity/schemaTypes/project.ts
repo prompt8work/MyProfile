@@ -1,4 +1,6 @@
 import { defineField, defineType } from "sanity";
+import { diagramsField } from "./processDiagram";
+import { diagramPlacements } from "./diagramPlacements";
 
 // Mirrors data/projects.ts field-for-field (built for PRD §20's detail-page
 // structure, which is more complete than the §64 schema stub) so the Phase 2
@@ -44,6 +46,7 @@ export default defineType({
     defineField({ name: "challenges", type: "text" }),
     defineField({ name: "results", type: "text" }),
     defineField({ name: "learnings", type: "text" }),
+    diagramsField(diagramPlacements.project),
     defineField({
       name: "relatedContent",
       type: "array",

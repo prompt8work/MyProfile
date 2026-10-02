@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import { siteUrl } from "../lib/site";
+import { siteKeywords, personName } from "../lib/seo";
 import { motionCssVars } from "../lib/motion";
 import MotionProvider from "../components/motion/MotionProvider";
 import "./globals.css";
@@ -23,16 +24,37 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
-const defaultTitle = "PromptAtWork — Niharika Dhande";
+const defaultTitle = "Niharika Dhande — Prompt Engineer & Generative AI Trainer, Indore | PromptAtWork";
 const defaultDescription =
-  "Full-Stack AI Engineer — prompt engineering, generative AI, RAG, AI-assisted development and automation.";
+  "Niharika Dhande is a Full-Stack AI Engineer, prompt engineer and Generative AI trainer based in Indore, India — prompt engineering training, RAG, LLM apps and AI automation.";
 const defaultOgImage = `${siteUrl}/og?title=${encodeURIComponent(defaultTitle)}&variant=blog`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: defaultTitle,
   description: defaultDescription,
+  applicationName: "PromptAtWork",
+  keywords: siteKeywords,
+  authors: [{ name: personName, url: siteUrl }],
+  creator: personName,
+  publisher: personName,
+  category: "technology",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
+  // Paste the content value of the Google Search Console / Bing Webmaster
+  // "HTML tag" verification into these env vars; unset means no tag.
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+      : undefined,
+  },
   openGraph: {
+    siteName: "PromptAtWork",
+    locale: "en_IN",
     title: defaultTitle,
     description: defaultDescription,
     images: [{ url: defaultOgImage, width: 1200, height: 630, alt: defaultTitle }],
@@ -48,7 +70,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       className={`${geistSans.variable} ${playfairDisplay.variable} ${jetbrainsMono.variable} h-full antialiased`}
       style={motionCssVars}
     >

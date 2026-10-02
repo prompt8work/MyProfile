@@ -1,0 +1,148 @@
+{
+  "type": "project",
+  "slug": "invoice-triage-bot",
+  "source": ".claude/skills/case-study/assets/example.source.md",
+  "fields": {
+    "title": "Invoice Triage Bot",
+    "category": "Automation · Structured Outputs",
+    "visibility": "generalized",
+    "confidentialityNote": "Built for an accounting client; the client's name and invoice data are withheld.",
+    "summary": "Reads emailed invoice PDFs, extracts the key fields as validated JSON, and routes only uncertain invoices to a person. In its first 30 days, 82% of invoices went straight through without review.",
+    "stats": [
+      "82% straight-through (first 30 days)",
+      "~300 invoices/month"
+    ],
+    "tech": [
+      "Python",
+      "FastAPI",
+      "pdfplumber",
+      "Airtable"
+    ],
+    "aiModels": [
+      "Claude"
+    ],
+    "overview": "An automation for a small accounting team that turns invoice emails into rows in their accounting sheet, with a person only stepping in when the model is unsure.",
+    "problem": "The team keyed in about 300 invoices a month by hand, copying vendor, amount and due date from PDF attachments.",
+    "solution": "I used Claude with a JSON schema so every extraction comes back in a fixed shape with a confidence score per field. Anything below 0.8 confidence, or anything that fails schema validation, goes to a human review queue instead of the sheet, so the automation only posts what it is sure of.",
+    "architecture": "A FastAPI service receives the email, pulls the PDF attachment, and extracts its text with pdfplumber. Claude extracts vendor, amount and due date as structured JSON. Validated rows are posted to the accounting sheet; the rest go to a review queue in Airtable.",
+    "workflow": "Email arrives → PDF attachment is pulled → text is extracted → Claude returns structured fields with confidence scores → the result is validated. High-confidence, valid results post to the sheet; the rest go to review.",
+    "challenges": "Scanned PDFs have no text layer, so there is nothing for the model to read. Those are routed straight to the review queue. Each week, corrections from the review queue go back into the prompt's few-shot examples.",
+    "results": "Over the first 30 days live, 82% of invoices went straight through without human review, against a baseline of every invoice being keyed in by hand."
+  },
+  "diagrams": [
+    {
+      "key": "end-to-end",
+      "title": "From email to accounting sheet",
+      "kind": "flow",
+      "placement": "top",
+      "caption": "Each invoice email is read, its fields extracted as structured JSON, and either posted automatically or sent to a person for review.",
+      "steps": [
+        {
+          "label": "Invoice email arrives",
+          "kind": "trigger"
+        },
+        {
+          "label": "Extract PDF text",
+          "detail": "pdfplumber",
+          "kind": "input"
+        },
+        {
+          "label": "Extract fields",
+          "detail": "Claude + JSON schema",
+          "kind": "ai"
+        },
+        {
+          "label": "Validate",
+          "kind": "decision"
+        },
+        {
+          "label": "Post to sheet",
+          "kind": "output"
+        }
+      ]
+    },
+    {
+      "key": "routing",
+      "title": "When does a person step in?",
+      "kind": "advanced",
+      "placement": "architecture",
+      "caption": "Only results that pass schema validation with confidence of at least 0.8 are posted automatically; scanned PDFs and uncertain results go to the review queue.",
+      "mermaid": "flowchart TD\n  E([Invoice email]) --> T{PDF has text layer?}\n  T -- no --> Q[Airtable review queue]\n  T -- yes --> C[Claude extracts fields + confidence]\n  C --> V{Valid schema and confidence ≥ 0.8?}\n  V -- yes --> S[(Accounting sheet)]\n  V -- no --> Q\n  Q --> H[Person corrects] --> S"
+    },
+    {
+      "key": "structured-output-analogy",
+      "title": "Structured outputs, explained",
+      "kind": "analogy",
+      "placement": "solution",
+      "concept": "Structured output with a JSON schema",
+      "analogy": "A pre-printed paper form",
+      "caption": "A schema makes the model fill in a form instead of writing a free-text answer, so the result can be checked box by box.",
+      "pairs": [
+        {
+          "concept": "The JSON schema",
+          "analogy": "The printed form with labelled boxes"
+        },
+        {
+          "concept": "The model's extraction",
+          "analogy": "Someone filling in each box"
+        },
+        {
+          "concept": "Schema validation",
+          "analogy": "Checking no box is blank or in the wrong format"
+        },
+        {
+          "concept": "Confidence score per field",
+          "analogy": "A \"not sure\" tick next to a box"
+        }
+      ]
+    },
+    {
+      "key": "results-flow",
+      "title": "Where the 82% comes from",
+      "kind": "flow",
+      "placement": "results",
+      "caption": "Measured over the first 30 days live: most invoices clear validation and post automatically; the rest are reviewed.",
+      "steps": [
+        {
+          "label": "Invoices in",
+          "kind": "input",
+          "metric": "~300 / month"
+        },
+        {
+          "label": "Extract & validate",
+          "kind": "ai"
+        },
+        {
+          "label": "Straight through",
+          "kind": "output",
+          "metric": "82% in first 30 days"
+        }
+      ]
+    },
+    {
+      "key": "weekly-improvement",
+      "title": "The weekly improvement loop",
+      "kind": "loop",
+      "placement": "challenges",
+      "caption": "Corrections made in the review queue become new few-shot examples in the prompt each week.",
+      "loopBackTo": 1,
+      "loopLabel": "every week",
+      "steps": [
+        {
+          "label": "Uncertain invoices reviewed",
+          "kind": "human"
+        },
+        {
+          "label": "Corrections collected",
+          "kind": "store"
+        },
+        {
+          "label": "Added as few-shot examples",
+          "kind": "action"
+        }
+      ]
+    }
+  ],
+  "relatedContent": [],
+  "openQuestions": []
+}

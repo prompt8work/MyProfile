@@ -16,11 +16,14 @@ import ReactionBar from "../../../components/blog/ReactionBar";
 import ShareActions from "../../../components/blog/ShareActions";
 import CommentForm from "../../../components/blog/CommentForm";
 import JsonLd from "../../../components/JsonLd";
+import DiagramBody from "../../../components/diagrams/DiagramBody";
+import type { Diagram } from "../../../components/diagrams/types";
 import { client } from "../../../sanity/lib/client";
 import { blogPostBySlugQuery, blogSlugsQuery } from "../../../sanity/lib/queries";
 import { getReactionCounts, type ReactionCounts } from "../../../supabase/blogReactionRepository";
 import { getPublishedComments, type PublishedComment } from "../../../supabase/commentRepository";
 import { buildBreadcrumbJsonLd, getCanonicalUrl } from "../../../lib/site";
+import { personName, personRef } from "../../../lib/seo";
 
 export const revalidate = 60;
 
@@ -37,6 +40,7 @@ type BlogPostDetail = {
   seoTitle?: string;
   seoDescription?: string;
   coverImage?: string;
+  diagrams?: Diagram[];
   relatedContent?: {
     _type: "project" | "tool" | "prompt" | "experiment" | "automation";
     slug: string;
@@ -84,7 +88,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     headline: post.title,
     description: post.seoDescription || post.excerpt,
     datePublished: post.publishedAt,
-    author: { "@type": "Person", name: post.author || "Niharika Dhande" },
+    author: !post.author || post.author === personName ? personRef : { "@type": "Person", name: post.author },
+    publisher: personRef,
     ...(post.coverImage ? { image: post.coverImage } : {}),
     mainEntityOfPage: canonicalUrl,
   };
@@ -149,7 +154,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <ShareActions url={canonicalUrl} title={post.title} />
             </Reveal>
 
-            <Reveal className="text-[15.5px] leading-relaxed text-neutral-700 whitespace-pre-wrap">{post.body}</Reveal>
+            <DiagramBody body={post.body} diagrams={post.diagrams} />
 
             {post.tags && post.tags.length > 0 && (
               <StaggerGrid className="flex flex-wrap gap-2">

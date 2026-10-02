@@ -13,7 +13,8 @@ export default function DocsPrevNext() {
   const prev = pages[i - 1];
   const next = pages[i + 1];
 
-  const card = "motion-btn flex-1 min-w-[200px] rounded-xl border border-neutral-200 bg-white px-5 py-4 hover:border-plum-300";
+  const card =
+    "motion-btn flex-1 min-w-[200px] rounded-xl border border-neutral-200 bg-white px-5 py-4 hover:border-plum-300";
   return (
     <nav aria-label="Previous and next" className="mt-16 pt-8 border-t border-neutral-200 flex flex-wrap gap-4">
       {prev ? (

@@ -34,12 +34,16 @@ export function buildMetadata({
   path,
   type = "website",
   ogVariant,
+  keywords,
 }: {
   title: string;
   description: string;
   path: string;
   type?: "website" | "article";
   ogVariant?: OgVariant;
+  // Page-specific search phrases; when omitted the root layout's sitewide
+  // list (src/lib/seo.ts) applies.
+  keywords?: string[];
 }) {
   const canonicalUrl = getCanonicalUrl(path);
   const variant = ogVariant ?? inferOgVariant(path);
@@ -47,8 +51,9 @@ export function buildMetadata({
   return {
     title,
     description,
+    ...(keywords ? { keywords } : {}),
     alternates: { canonical: canonicalUrl },
-    openGraph: { title, description, url: canonicalUrl, type, images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }] },
+    openGraph: { siteName: "PromptAtWork", locale: "en_IN", title, description, url: canonicalUrl, type, images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }] },
     twitter: { card: "summary_large_image" as const, title, description, images: [ogImageUrl] },
   };
 }

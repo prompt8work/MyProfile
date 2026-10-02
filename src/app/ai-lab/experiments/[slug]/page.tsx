@@ -8,6 +8,8 @@ import ContentSection, { BlockLabel, ListSection } from "../../../../components/
 import Reveal from "../../../../components/motion/Reveal";
 import RelatedContent, { type RelatedItem } from "../../../../components/ai-lab/RelatedContent";
 import JsonLd from "../../../../components/JsonLd";
+import Diagrams from "../../../../components/diagrams/DiagramFigure";
+import type { Diagram } from "../../../../components/diagrams/types";
 import { client } from "../../../../sanity/lib/client";
 import { experimentBySlugQuery, experimentSlugsQuery } from "../../../../sanity/lib/queries";
 import { buildBreadcrumbJsonLd, buildMetadata } from "../../../../lib/site";
@@ -32,6 +34,7 @@ type ExperimentDetail = {
   useCases?: string[];
   tool?: { slug: string; name: string };
   relatedContent?: RelatedItem[];
+  diagrams?: Diagram[];
 };
 
 export async function generateStaticParams() {
@@ -76,12 +79,19 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
         </DocsHeader>
 
         <div className="flex flex-col gap-10">
+          <Diagrams items={experiment.diagrams} at="top" />
           <ContentSection heading="Hypothesis" body={experiment.hypothesis} />
+          <Diagrams items={experiment.diagrams} at="hypothesis" />
           <ContentSection heading="Problem" body={experiment.problem} />
+          <Diagrams items={experiment.diagrams} at="problem" />
           <ContentSection heading="Setup" body={experiment.setup} />
+          <Diagrams items={experiment.diagrams} at="setup" />
           <ContentSection heading="Prompt / Workflow" body={experiment.promptOrWorkflow} />
+          <Diagrams items={experiment.diagrams} at="promptOrWorkflow" />
           <ContentSection heading="Input" body={experiment.input} />
+          <Diagrams items={experiment.diagrams} at="input" />
           <ContentSection heading="Output" body={experiment.output} />
+          <Diagrams items={experiment.diagrams} at="output" />
 
           {(experiment.whatWorked || experiment.whatFailed) && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -99,10 +109,14 @@ export default async function ExperimentDetailPage({ params }: { params: Promise
               )}
             </div>
           )}
+          <Diagrams items={experiment.diagrams} at="outcome" />
 
           <ContentSection heading="Learning" body={experiment.learning} />
+          <Diagrams items={experiment.diagrams} at="learning" />
           <ContentSection heading="Decision" body={experiment.decision} />
+          <Diagrams items={experiment.diagrams} at="decision" />
           <ContentSection heading="Next Step" body={experiment.nextStep} />
+          <Diagrams items={experiment.diagrams} at="nextStep" />
           <ListSection heading="Use Cases" items={experiment.useCases} />
 
           <RelatedContent items={experiment.relatedContent} />

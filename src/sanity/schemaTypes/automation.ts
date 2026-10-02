@@ -1,4 +1,6 @@
 import { defineField, defineType } from "sanity";
+import { diagramsField } from "./processDiagram";
+import { diagramPlacements } from "./diagramPlacements";
 
 // PRD §68. `steps` models the Trigger → Input → AI Processing → Decision →
 // Action → Output visualization from §27 as an ordered list of labeled
@@ -70,6 +72,7 @@ export default defineType({
       type: "text",
       description: "Master content doc §22 — what building/running this automation actually taught, matching Experiment's own 'learning' field.",
     }),
+    diagramsField(diagramPlacements.automation),
     defineField({
       name: "relatedContent",
       type: "array",

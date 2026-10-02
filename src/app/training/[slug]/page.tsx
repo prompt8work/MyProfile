@@ -19,7 +19,8 @@ import JsonLd from "../../../components/JsonLd";
 import { client } from "../../../sanity/lib/client";
 import { trainingBySlugQuery, trainingSlugsQuery } from "../../../sanity/lib/queries";
 import { getBatchesForTraining, getScheduleForBatch, type TrainingBatch } from "../../../supabase/trainingRepository";
-import { buildBreadcrumbJsonLd, getCanonicalUrl } from "../../../lib/site";
+import { buildBreadcrumbJsonLd, buildMetadata, getCanonicalUrl } from "../../../lib/site";
+import { personName, personRef } from "../../../lib/seo";
 
 export const revalidate = 60;
 
@@ -52,13 +53,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const training: TrainingDetail | null = await client.fetch(trainingBySlugQuery, { slug });
   if (!training) return {};
-  const canonicalUrl = getCanonicalUrl(`/training/${training.slug}`);
-  return {
-    title: `${training.title} — Training — PromptAtWork`,
+  return buildMetadata({
+    title: `${training.title} Course by Niharika Dhande, Indore (Online) — PromptAtWork`,
     description: training.description,
-    alternates: { canonical: canonicalUrl },
-    openGraph: { title: training.title, description: training.description, url: canonicalUrl, type: "website" },
-  };
+    path: `/training/${training.slug}`,
+    keywords: [
+      `${training.title.toLowerCase()} course`,
+      `${training.title.toLowerCase()} training in Indore`,
+      "generative AI trainer in Indore",
+      "Niharika Dhande",
+    ],
+  });
 }
 
 export default async function TrainingDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -74,8 +79,22 @@ export default async function TrainingDetailPage({ params }: { params: Promise<{
     "@type": "Course",
     name: training.title,
     description: training.description,
-    provider: { "@type": "Organization", name: "PromptAtWork", sameAs: getCanonicalUrl("/") },
-    ...(training.instructor ? { instructor: { "@type": "Person", name: training.instructor } } : {}),
+    url: getCanonicalUrl(`/training/${training.slug}`),
+    inLanguage: "en",
+    provider: { "@type": "Organization", "@id": `${getCanonicalUrl("/")}#organization`, name: "PromptAtWork", url: getCanonicalUrl("/") },
+    ...(training.instructor
+      ? { instructor: training.instructor === personName ? personRef : { "@type": "Person", name: training.instructor } }
+      : {}),
+    ...(training.mode || training.duration
+      ? {
+          hasCourseInstance: {
+            "@type": "CourseInstance",
+            ...(training.mode ? { courseMode: training.mode } : {}),
+            ...(training.duration ? { courseWorkload: training.duration } : {}),
+            ...(training.instructor === personName ? { instructor: personRef } : {}),
+          },
+        }
+      : {}),
   };
 
   return (

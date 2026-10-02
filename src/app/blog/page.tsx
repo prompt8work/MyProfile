@@ -10,8 +10,8 @@ import { blogPostsQuery } from "../../sanity/lib/queries";
 import { buildMetadata } from "../../lib/site";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Blog — PromptAtWork",
-  description: "Writing on Full-Stack AI Engineering, prompt engineering and AI-assisted development.",
+  title: "Blog — Prompt Engineering & Generative AI Writing by Niharika Dhande | PromptAtWork",
+  description: "Niharika Dhande writes on prompt engineering, Generative AI, Full-Stack AI Engineering and AI-assisted development.",
   path: "/blog",
 });
 

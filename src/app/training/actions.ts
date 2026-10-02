@@ -9,7 +9,9 @@ const registrationSchema = z.object({
   batchId: z.string().uuid(),
   trainingId: z.string().trim().min(1),
   name: z.string().trim().min(1, "Name is required").max(200),
-  email: z.string().trim().min(1, "Email is required").email("Enter a valid email"),
+  // Lower-cased so "A@x.com" and "a@x.com" hit the duplicate check as the
+  // same person (register_for_batch also lower-cases, as a second guard).
+  email: z.string().trim().toLowerCase().min(1, "Email is required").email("Enter a valid email"),
   phone: z.string().trim().max(30).optional(),
   organization: z.string().trim().max(200).optional(),
   experienceLevel: z.enum(experienceLevels).optional(),

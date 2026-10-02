@@ -31,7 +31,7 @@ import { educationLines, formatPeriod, getResume, splitRoles } from "../../lib/r
 import { buildMetadata } from "../../lib/site";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Resume — PromptAtWork",
+  title: "Resume — Niharika Dhande, Full-Stack AI Engineer, Indore | PromptAtWork",
   description:
     "Resume of Niharika Dhande, Full-Stack AI Engineer: multi-LLM systems, prompt engineering, RAG, evaluation and full-stack delivery.",
   path: "/resume",

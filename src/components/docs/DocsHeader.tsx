@@ -74,16 +74,36 @@ export function DocsEntry({
 }) {
   return (
     <section className="py-8 first:pt-0 border-t border-neutral-200 first:border-t-0 flex flex-col gap-3">
-      {eyebrow && <span className="font-mono text-[10.5px] tracking-[0.14em] font-semibold text-neutral-500 uppercase">{eyebrow}</span>}
-      <h2 id={id} className="scroll-mt-28 font-sans text-[21px] sm:text-[22px] font-semibold tracking-tight leading-snug">
+      {eyebrow && (
+        <span className="font-mono text-[10.5px] tracking-[0.14em] font-semibold text-neutral-500 uppercase">
+          {eyebrow}
+        </span>
+      )}
+      <h2
+        id={id}
+        className="scroll-mt-28 font-sans text-[21px] sm:text-[22px] font-semibold tracking-tight leading-snug"
+      >
         <Link href={href} className="text-neutral-900 hover:text-plum-600">
           {title}
         </Link>
       </h2>
       {children}
-      <Link href={href} className="motion-arrow self-start inline-flex items-center gap-1.5 text-[14px] font-semibold text-plum-600 hover:text-plum-700">
+      <Link
+        href={href}
+        className="motion-arrow self-start inline-flex items-center gap-1.5 text-[14px] font-semibold text-plum-600 hover:text-plum-700"
+      >
         {cta}
-        <svg className="motion-arrow-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          className="motion-arrow-icon"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <path d="M5 12h14M13 6l6 6-6 6" />
         </svg>
       </Link>
