@@ -17,7 +17,16 @@ const grid = {
 };
 
 function EntryIcon({ i }: { i: number }) {
-  const common = { width: 26, height: 26, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const common = {
+    width: 26,
+    height: 26,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.6,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
   if (i === 0)
     return (
       <svg {...common}>
@@ -63,12 +72,19 @@ export default function LabLoopDiagram() {
                 <span className="text-[14.5px] font-semibold text-neutral-900">{s.label}</span>
                 <span className="mt-0.5 text-[11.5px] text-neutral-500">{s.holds}</span>
                 {i < stages.length - 1 && (
-                  <span aria-hidden className="hidden sm:block absolute top-1/2 -right-[21px] w-[18px] h-px bg-neutral-400">
+                  <span
+                    aria-hidden
+                    className="hidden sm:block absolute top-1/2 -right-[21px] w-[18px] h-px bg-neutral-400"
+                  >
                     <span className="absolute -right-0.5 -top-[3px] border-y-[3.5px] border-y-transparent border-l-[5px] border-l-neutral-400" />
                   </span>
                 )}
               </Link>
-              {i < stages.length - 1 && <span aria-hidden className="sm:hidden self-center text-neutral-400 text-sm">↓</span>}
+              {i < stages.length - 1 && (
+                <span aria-hidden className="sm:hidden self-center text-neutral-400 text-sm">
+                  ↓
+                </span>
+              )}
             </li>
           ))}
         </ol>

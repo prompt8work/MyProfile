@@ -6,8 +6,9 @@ import Contact from "../../components/home/Contact";
 import { buildMetadata } from "../../lib/site";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Contact — PromptAtWork",
-  description: "Get in touch about job opportunities, AI consulting, training, workshops or collaboration.",
+  title: "Contact Niharika Dhande — AI Training & Prompt Engineering, Indore | PromptAtWork",
+  description:
+    "Get in touch with Niharika Dhande in Indore, India about prompt engineering and Generative AI training, workshops, AI consulting, job opportunities or collaboration.",
   path: "/contact",
 });
 

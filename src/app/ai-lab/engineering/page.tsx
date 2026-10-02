@@ -26,32 +26,40 @@ export default function EngineeringPage() {
         />
 
         <div>
-        {engineeringSections.map((s) => (
-          <Reveal key={s.id} className="py-8 first:pt-0 border-t border-neutral-200 first:border-t-0">
-            <section className="flex flex-col gap-3">
-              <span className="font-mono text-[10.5px] tracking-[0.14em] font-semibold text-neutral-500">{s.eyebrow}</span>
-              <h2 id={s.id} className="scroll-mt-28 font-sans text-[21px] sm:text-[22px] font-semibold tracking-tight text-neutral-900">
-                {s.title}
-              </h2>
-              <p className="text-[15.5px] leading-[1.75] text-neutral-700">{s.description}</p>
-              <div className="flex flex-wrap gap-1.5">
-                {s.items.map((item) => (
-                  <DocsTag key={item}>{item}</DocsTag>
-                ))}
-              </div>
-              <div className="pt-1">
-                <ArrowLink href={s.link.href} size="sm">
-                  Evidence: {s.link.label}
-                </ArrowLink>
-              </div>
-            </section>
-          </Reveal>
-        ))}
+          {engineeringSections.map((s) => (
+            <Reveal key={s.id} className="py-8 first:pt-0 border-t border-neutral-200 first:border-t-0">
+              <section className="flex flex-col gap-3">
+                <span className="font-mono text-[10.5px] tracking-[0.14em] font-semibold text-neutral-500">
+                  {s.eyebrow}
+                </span>
+                <h2
+                  id={s.id}
+                  className="scroll-mt-28 font-sans text-[21px] sm:text-[22px] font-semibold tracking-tight text-neutral-900"
+                >
+                  {s.title}
+                </h2>
+                <p className="text-[15.5px] leading-[1.75] text-neutral-700">{s.description}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {s.items.map((item) => (
+                    <DocsTag key={item}>{item}</DocsTag>
+                  ))}
+                </div>
+                <div className="pt-1">
+                  <ArrowLink href={s.link.href} size="sm">
+                    Evidence: {s.link.label}
+                  </ArrowLink>
+                </div>
+              </section>
+            </Reveal>
+          ))}
         </div>
 
         <Reveal className="mt-2 pt-8 border-t border-neutral-200">
           <section className="flex flex-col gap-3">
-            <h2 id="currently-strengthening" className="scroll-mt-28 font-sans text-[21px] sm:text-[22px] font-semibold tracking-tight text-neutral-900">
+            <h2
+              id="currently-strengthening"
+              className="scroll-mt-28 font-sans text-[21px] sm:text-[22px] font-semibold tracking-tight text-neutral-900"
+            >
               Currently strengthening
             </h2>
             <p className="text-[15.5px] leading-[1.75] text-neutral-700">

@@ -1,4 +1,6 @@
 import { defineField, defineType } from "sanity";
+import { diagramsField } from "./processDiagram";
+import { diagramPlacements } from "./diagramPlacements";
 
 // PRD §25 structure.
 export default defineType({
@@ -43,6 +45,7 @@ export default defineType({
       description: "Master content doc §20 — what follows from this experiment, if anything.",
     }),
     defineField({ name: "useCases", type: "array", of: [{ type: "string" }] }),
+    diagramsField(diagramPlacements.experiment),
     defineField({
       name: "relatedContent",
       type: "array",

@@ -24,6 +24,24 @@ const nextConfig: NextConfig = {
       { source: "/about", destination: "/#about", permanent: true },
     ];
   },
+  // Baseline security headers on every response. No Content-Security-Policy
+  // yet: the embedded Studio, Mermaid and YouTube embeds each need their
+  // own allowances, so a CSP needs its own tested pass rather than a guess.
+  // SAMEORIGIN (not DENY) so Sanity Studio's same-origin previews still work.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+        ],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "cdn.sanity.io" },

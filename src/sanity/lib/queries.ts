@@ -8,6 +8,18 @@ const relatedContentProjection = groq`
   relatedContent[]->{ _type, "slug": slug.current, title, name, category }
 `;
 
+// Every blog post and AI Lab entry carries process diagrams (content rule —
+// Docs/design/content-guidelines.md). Rendered by components/diagrams.
+const diagramsProjection = groq`
+  "diagrams": diagrams[]{
+    "key": key.current, title, kind, placement, caption,
+    steps[]{ label, detail, kind, metric, before, after, edgeLabel },
+    loopBackTo, loopLabel,
+    concept, analogy, pairs[]{ concept, analogy },
+    mermaid
+  }
+`;
+
 // `visibility != "private"` is enforced in the query itself, not just in
 // application code — the same defense-in-depth principle as
 // `getProjectBySlug` in data/projects.ts (PRD §22): a private project
@@ -51,6 +63,7 @@ export const projectBySlugQuery = groq`
     results,
     learnings,
     "coverImage": coverImage.asset->url,
+    ${diagramsProjection},
     ${relatedContentProjection}
   }
 `;
@@ -149,6 +162,7 @@ export const toolBySlugQuery = groq`
     "logo": logo.asset->url,
     "relatedVideos": relatedVideos[]->{ "slug": slug.current, title, thumbnailUrl, externalUrl },
     "resources": resources[]{ title, resourceType, description, version, publishedAt, updatedAt, "fileUrl": file.asset->url, "fileName": file.asset->originalFilename },
+    ${diagramsProjection},
     ${relatedContentProjection},
     "relatedExperiments": *[_type == "experiment" && references(^._id)]{ "slug": slug.current, title, objective },
     "relatedBlogs": *[_type == "blog" && references(^._id) && publishedAt <= now()]{ "slug": slug.current, title, excerpt },
@@ -183,6 +197,7 @@ export const promptBySlugQuery = groq`
     difficulty,
     tips,
     "tool": tool->{ "slug": slug.current, name },
+    ${diagramsProjection},
     ${relatedContentProjection}
   }
 `;
@@ -216,6 +231,7 @@ export const experimentBySlugQuery = groq`
     nextStep,
     useCases,
     "tool": tool->{ "slug": slug.current, name },
+    ${diagramsProjection},
     ${relatedContentProjection}
   }
 `;
@@ -248,6 +264,7 @@ export const automationBySlugQuery = groq`
     securityNotes,
     learnings,
     "tools": tools[]->{ "slug": slug.current, name },
+    ${diagramsProjection},
     ${relatedContentProjection}
   }
 `;
@@ -282,6 +299,7 @@ export const blogPostBySlugQuery = groq`
     seoTitle,
     seoDescription,
     "coverImage": coverImage.asset->url,
+    ${diagramsProjection},
     ${relatedContentProjection}
   }
 `;

@@ -11,6 +11,8 @@ import MotionCard from "../../../../components/motion/MotionCard";
 import { StaggerGrid, StaggerItem } from "../../../../components/motion/StaggerGrid";
 import RelatedContent, { type RelatedItem } from "../../../../components/ai-lab/RelatedContent";
 import JsonLd from "../../../../components/JsonLd";
+import Diagrams from "../../../../components/diagrams/DiagramFigure";
+import type { Diagram } from "../../../../components/diagrams/types";
 import { client } from "../../../../sanity/lib/client";
 import { toolBySlugQuery, toolSlugsQuery } from "../../../../sanity/lib/queries";
 import { buildBreadcrumbJsonLd, buildMetadata } from "../../../../lib/site";
@@ -54,6 +56,7 @@ type ToolDetail = {
   relatedVideos?: { slug: string; title: string; thumbnailUrl?: string; externalUrl: string }[];
   resources?: ToolResource[];
   relatedContent?: RelatedItem[];
+  diagrams?: Diagram[];
   relatedExperiments?: { slug: string; title: string; objective?: string }[];
   relatedBlogs?: { slug: string; title: string; excerpt?: string }[];
   relatedProjects?: { slug: string; title: string; summary?: string }[];
@@ -155,14 +158,22 @@ export default async function ToolDetailPage({ params }: { params: Promise<{ slu
         </DocsHeader>
 
         <div className="flex flex-col gap-10">
+          <Diagrams items={tool.diagrams} at="top" />
           <ContentSection heading="Overview" body={tool.overview} />
+          <Diagrams items={tool.diagrams} at="overview" />
           <ContentSection heading="What It Does" body={tool.whatItDoes} />
+          <Diagrams items={tool.diagrams} at="whatItDoes" />
           <ContentSection heading="Why I Explored It" body={tool.whyExplored} />
+          <Diagrams items={tool.diagrams} at="whyExplored" />
           <ContentSection id="research" heading="Research" body={tool.researchContent} />
+          <Diagrams items={tool.diagrams} at="research" />
           <ListSection id="best-use-cases" heading="Best Use Cases" items={tool.useCases} />
+          <Diagrams items={tool.diagrams} at="useCases" />
           <ListSection id="limitations" heading="Limitations & Less-Suitable Scenarios" items={tool.limitations} marker="−" />
           <ContentSection heading="Practical Scenarios" body={tool.practicalScenarios} />
+          <Diagrams items={tool.diagrams} at="practicalScenarios" />
           <ContentSection heading="My Experience" body={tool.myExperience} />
+          <Diagrams items={tool.diagrams} at="myExperience" />
           <ListSection heading="Strengths" items={tool.strengths} marker="+" />
 
           {tool.relatedVideos && tool.relatedVideos.length > 0 && (

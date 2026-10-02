@@ -11,8 +11,8 @@ import ResumeCTA from "../components/home/ResumeCTA";
 import Contact from "../components/home/Contact";
 import SiteFooter from "../components/SiteFooter";
 import JsonLd from "../components/JsonLd";
-import { buildMetadata, getCanonicalUrl } from "../lib/site";
-import { personalInfo } from "../../data";
+import { buildMetadata } from "../lib/site";
+import { homeJsonLd } from "../lib/seo";
 
 // Interim revalidation strategy until the Sanity webhook is wired up
 // (needs a deployed URL first — see Phase 2 doc). ContentPreview and
@@ -20,27 +20,16 @@ import { personalInfo } from "../../data";
 export const revalidate = 60;
 
 export const metadata: Metadata = buildMetadata({
-  title: "PromptAtWork — Niharika Dhande, Full-Stack AI Engineer",
+  title: "Niharika Dhande — Prompt Engineer & Generative AI Trainer in Indore | PromptAtWork",
   description:
-    "Full-Stack AI Engineer — prompt engineering, generative AI, RAG, AI-assisted development and automation.",
+    "Niharika Dhande is a Full-Stack AI Engineer, prompt engineer and Generative AI trainer based in Indore, India. Prompt engineering training, RAG, LLM apps and AI automation — built and taught in the open.",
   path: "/",
 });
-
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: personalInfo.name,
-  jobTitle: personalInfo.title,
-  url: getCanonicalUrl("/"),
-  email: `mailto:${personalInfo.email}`,
-  address: personalInfo.location,
-  sameAs: [`https://${personalInfo.linkedin}`],
-};
 
 export default function Home() {
   return (
     <PageTransition className="min-h-screen bg-neutral-50">
-      <JsonLd data={personJsonLd} />
+      <JsonLd data={homeJsonLd} />
       <Nav />
       <main>
         <Hero />

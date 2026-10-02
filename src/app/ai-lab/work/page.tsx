@@ -40,32 +40,32 @@ export default async function WorkPage() {
           description="Every project in one scroll: what it is, the numbers that matter and the stack behind it. Open any case study for the full problem → architecture → results → learnings write-up."
         />
         <div>
-        {projects.map((p) => (
-          <DocsEntry
-            key={p.slug}
-            id={p.slug}
-            eyebrow={p.category}
-            title={p.title}
-            href={`/ai-lab/work/${p.slug}`}
-            cta="Read the case study"
-          >
-            <p className="text-[15.5px] leading-[1.75] text-neutral-700">{p.summary}</p>
-            {p.stats && p.stats.length > 0 && (
-              <div className="flex flex-wrap gap-x-5 gap-y-1">
-                {p.stats.map((s) => (
-                  <CountUp key={s} value={s} className="font-mono text-[12.5px] font-semibold text-cyan-700" />
-                ))}
-              </div>
-            )}
-            {p.tech && p.tech.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {p.tech.map((t) => (
-                  <DocsTag key={t}>{t}</DocsTag>
-                ))}
-              </div>
-            )}
-          </DocsEntry>
-        ))}
+          {projects.map((p) => (
+            <DocsEntry
+              key={p.slug}
+              id={p.slug}
+              eyebrow={p.category}
+              title={p.title}
+              href={`/ai-lab/work/${p.slug}`}
+              cta="Read the case study"
+            >
+              <p className="text-[15.5px] leading-[1.75] text-neutral-700">{p.summary}</p>
+              {p.stats && p.stats.length > 0 && (
+                <div className="flex flex-wrap gap-x-5 gap-y-1">
+                  {p.stats.map((s) => (
+                    <CountUp key={s} value={s} className="font-mono text-[12.5px] font-semibold text-cyan-700" />
+                  ))}
+                </div>
+              )}
+              {p.tech && p.tech.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {p.tech.map((t) => (
+                    <DocsTag key={t}>{t}</DocsTag>
+                  ))}
+                </div>
+              )}
+            </DocsEntry>
+          ))}
         </div>
       </DocsArticle>
     </PageTransition>

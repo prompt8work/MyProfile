@@ -12,9 +12,9 @@ import { experienceQuery } from "../../sanity/lib/queries";
 import { buildMetadata } from "../../lib/site";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Experience — PromptAtWork",
+  title: "Experience — Niharika Dhande, AI Engineer in Indore | PromptAtWork",
   description:
-    "Professional journey combining a software engineering foundation with hands-on Generative AI engineering and prompt engineering.",
+    "Niharika Dhande's professional journey in Indore: a software engineering foundation combined with hands-on Generative AI engineering and prompt engineering.",
   path: "/experience",
 });
 

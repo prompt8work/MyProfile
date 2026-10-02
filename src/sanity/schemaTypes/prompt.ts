@@ -1,4 +1,6 @@
 import { defineField, defineType } from "sanity";
+import { diagramsField } from "./processDiagram";
+import { diagramPlacements } from "./diagramPlacements";
 
 // PRD §67, categories from §26.
 const difficulties = ["Beginner", "Intermediate", "Advanced"];
@@ -51,6 +53,7 @@ export default defineType({
     defineField({ name: "difficulty", type: "string", options: { list: difficulties } }),
     defineField({ name: "tool", type: "reference", to: [{ type: "tool" }] }),
     defineField({ name: "tips", title: "Tips / Evaluation Notes", type: "text" }),
+    diagramsField(diagramPlacements.prompt),
     defineField({
       name: "relatedContent",
       type: "array",

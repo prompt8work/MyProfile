@@ -37,6 +37,17 @@ const staticPaths = [
   "/videos",
 ];
 
+// Hint for crawlers about which pages matter most: the homepage and the
+// training/AI Lab hubs carry the "prompt engineer / Generative AI trainer
+// in Indore" positioning, so they rank above individual entries.
+function priorityFor(path: string): number {
+  if (path === "/") return 1;
+  if (["/training", "/ai-lab", "/contact", "/resume"].includes(path)) return 0.9;
+  if (path.startsWith("/training/") || path === "/blog") return 0.8;
+  if (["/privacy", "/cover-letter"].includes(path)) return 0.3;
+  return 0.6;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [projectSlugs, toolSlugs, promptSlugs, experimentSlugs, automationSlugs, blogSlugs, trainingSlugs] =
     await Promise.all([
@@ -62,5 +73,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [...staticPaths, ...dynamicPaths].map((path) => ({
     url: getCanonicalUrl(path),
     lastModified: new Date(),
+    priority: priorityFor(path),
   }));
 }
